@@ -1,7 +1,7 @@
 #define CATCH_CONFIG_RUNNER
 #include "catch.hpp"
 
-#include "anim/assert.h"
+#include "vita/assert.h"
 
 int main(int argc, char* argv[])
 {

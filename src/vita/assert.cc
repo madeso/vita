@@ -1,8 +1,8 @@
-#include "anim/assert.h"
+#include "vita/assert.h"
 
 #include <iostream>
 
-#include "anim/str.h"
+#include "vita/str.h"
 
 namespace
 {

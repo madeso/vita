@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.15)
 set_property(GLOBAL PROPERTY USE_FOLDERS OFF)
-project(anim CXX C)
+project(vita CXX C)
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_CURRENT_SOURCE_DIR}/cmake/modules")
 
 function(cmake_source_group)
@@ -30,8 +30,8 @@ target_compile_features(project_options INTERFACE cxx_std_17)
 set_project_warnings(project_warnings)
 enable_sanitizers(project_options)
 
-add_library(anim::project_options ALIAS project_options)
-add_library(anim::project_warnings ALIAS project_warnings)
+add_library(vita::project_options ALIAS project_options)
+add_library(vita::project_warnings ALIAS project_warnings)
 
 add_subdirectory(external)
 add_subdirectory(src)

@@ -1,4 +1,4 @@
-#include "anim/anim.h"
+#include "vita/vita.h"
 
 struct ExampleApp : App
 {

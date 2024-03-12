@@ -7,7 +7,7 @@ source_group("" FILES ${src})
 cmake_source_group()
 target_link_libraries(example
     PRIVATE
-        anim::anim
-        anim::project_options
-        anim::project_warnings
+        vita::vita
+        vita::project_options
+        vita::project_warnings
 )

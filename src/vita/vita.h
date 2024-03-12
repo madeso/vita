@@ -4,7 +4,7 @@
 
 #include "imgui.h"
 
-#include "anim/dependency_sdl.h"
+#include "vita/dependency_sdl.h"
 
 struct App
 {

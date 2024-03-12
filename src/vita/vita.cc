@@ -1,10 +1,10 @@
-#include "anim/anim.h"
+#include "vita/vita.h"
 
 #include "imgui.h"
 #include "imgui_impl_sdl2.h"
 #include "imgui_impl_opengl3.h"
 
-#include "anim/opengl_utils.h"
+#include "vita/opengl_utils.h"
 
 constexpr int start_width = 800;
 constexpr int starth_height = 600;
@@ -149,7 +149,7 @@ int run_main(MakeAppFunction make_app)
 	// create window
 
 	auto* sdl_window = SDL_CreateWindow(
-		"anim",
+		"vita",
 		SDL_WINDOWPOS_UNDEFINED,
 		SDL_WINDOWPOS_UNDEFINED,
 		start_width,

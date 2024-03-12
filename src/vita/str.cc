@@ -1,4 +1,4 @@
-#include "anim/str.h"
+#include "vita/str.h"
 
 std::string Str::str() const
 {

@@ -5,23 +5,23 @@ set(src_render
 )
     
 set(src_base
-    anim/assert.cc anim/assert.h
-    anim/dependency_glad.h
-    anim/dependency_sdl.cc anim/dependency_sdl.h
-    anim/result.cc anim/result.h
-    anim/str.cc anim/str.h
+    vita/assert.cc vita/assert.h
+    vita/dependency_glad.h
+    vita/dependency_sdl.cc vita/dependency_sdl.h
+    vita/result.cc vita/result.h
+    vita/str.cc vita/str.h
     
-    anim/anim.cc anim/anim.h
-    anim/opengl_utils.cc anim/opengl_utils.h
+    vita/vita.cc vita/vita.h
+    vita/opengl_utils.cc vita/opengl_utils.h
     
-    anim/compiler_warning.h
-    anim/log.h
-    anim/cint.h
-    anim/undef_windows.h
+    vita/compiler_warning.h
+    vita/log.h
+    vita/cint.h
+    vita/undef_windows.h
 )
 
 set(src_pch
-    anim/pch.public.h anim/pch.private.h
+    vita/pch.public.h vita/pch.private.h
 )
 
 set(src
@@ -32,8 +32,8 @@ set(src
     ${shaders}
 )
 
-add_library(anim STATIC ${src})
-target_link_libraries(anim
+add_library(vita STATIC ${src})
+target_link_libraries(vita
     PUBLIC
         external::sdl2
         external::opengl
@@ -43,18 +43,18 @@ target_link_libraries(anim
         external::imgui
     PRIVATE
         embed::embed
-        anim::project_options
-        anim::project_warnings
+        vita::project_options
+        vita::project_warnings
 )
-target_include_directories(anim
+target_include_directories(vita
     PUBLIC
         ${CMAKE_CURRENT_SOURCE_DIR}
     PRIVATE
         ${CMAKE_CURRENT_BINARY_DIR}
 )
-target_precompile_headers(anim
-    PUBLIC anim/pch.public.h
-    PRIVATE anim/pch.private.h
+target_precompile_headers(vita
+    PUBLIC vita/pch.public.h
+    PRIVATE vita/pch.private.h
 )
 
 source_group("" FILES ${src})
@@ -68,16 +68,16 @@ source_group("shaders" FILES ${shaders})
 
 cmake_source_group()
 
-add_library(anim::anim ALIAS anim)
+add_library(vita::vita ALIAS vita)
 
 
 set(src_test
-    anim/main.test.cc
+    vita/main.test.cc
 )
 add_executable(test
     ${src_test}
 )
 target_link_libraries(test
     catchy::catchy
-    anim::anim
+    vita::vita
 )

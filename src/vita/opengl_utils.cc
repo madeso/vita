@@ -1,7 +1,7 @@
-#include "anim/opengl_utils.h"
+#include "vita/opengl_utils.h"
 
-#include "anim/assert.h"
-#include "anim/dependency_sdl.h"
+#include "vita/assert.h"
+#include "vita/dependency_sdl.h"
 
 const char* opengl_error_to_string(GLenum error_code)
 {
