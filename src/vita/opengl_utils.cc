@@ -24,44 +24,44 @@ const char* opengl_error_to_string(GLenum error_code)
 
 namespace
 {
-	const char* source_to_string(GLenum source)
+const char* source_to_string(GLenum source)
+{
+	switch (source)
 	{
-		switch (source)
-		{
-		case GL_DEBUG_SOURCE_API_ARB: return "API";
-		case GL_DEBUG_SOURCE_WINDOW_SYSTEM_ARB: return "Window System";
-		case GL_DEBUG_SOURCE_SHADER_COMPILER_ARB: return "Shader Compiler";
-		case GL_DEBUG_SOURCE_THIRD_PARTY_ARB: return "Third Party";
-		case GL_DEBUG_SOURCE_APPLICATION_ARB: return "Application";
-		case GL_DEBUG_SOURCE_OTHER_ARB: return "Other";
-		default: return "Unknown";
-		}
+	case GL_DEBUG_SOURCE_API_ARB: return "API";
+	case GL_DEBUG_SOURCE_WINDOW_SYSTEM_ARB: return "Window System";
+	case GL_DEBUG_SOURCE_SHADER_COMPILER_ARB: return "Shader Compiler";
+	case GL_DEBUG_SOURCE_THIRD_PARTY_ARB: return "Third Party";
+	case GL_DEBUG_SOURCE_APPLICATION_ARB: return "Application";
+	case GL_DEBUG_SOURCE_OTHER_ARB: return "Other";
+	default: return "Unknown";
 	}
+}
 
-	const char* type_to_string(GLenum type)
+const char* type_to_string(GLenum type)
+{
+	switch (type)
 	{
-		switch (type)
-		{
-		case GL_DEBUG_TYPE_ERROR_ARB: return "Error";
-		case GL_DEBUG_TYPE_DEPRECATED_BEHAVIOR_ARB: return "Deprecated Behaviour";
-		case GL_DEBUG_TYPE_UNDEFINED_BEHAVIOR_ARB: return "Undefined Behaviour";
-		case GL_DEBUG_TYPE_PORTABILITY_ARB: return "Portability";
-		case GL_DEBUG_TYPE_PERFORMANCE_ARB: return "Performance";
-		case GL_DEBUG_TYPE_OTHER_ARB: return "Other";
-		default: return "Unknown";
-		}
+	case GL_DEBUG_TYPE_ERROR_ARB: return "Error";
+	case GL_DEBUG_TYPE_DEPRECATED_BEHAVIOR_ARB: return "Deprecated Behaviour";
+	case GL_DEBUG_TYPE_UNDEFINED_BEHAVIOR_ARB: return "Undefined Behaviour";
+	case GL_DEBUG_TYPE_PORTABILITY_ARB: return "Portability";
+	case GL_DEBUG_TYPE_PERFORMANCE_ARB: return "Performance";
+	case GL_DEBUG_TYPE_OTHER_ARB: return "Other";
+	default: return "Unknown";
 	}
+}
 
-	const char* severity_to_string(GLenum severity)
+const char* severity_to_string(GLenum severity)
+{
+	switch (severity)
 	{
-		switch (severity)
-		{
-		case GL_DEBUG_SEVERITY_HIGH_ARB: return "high";
-		case GL_DEBUG_SEVERITY_MEDIUM_ARB: return "medium";
-		case GL_DEBUG_SEVERITY_LOW_ARB: return "low";
-		default: return "unknown";
-		}
+	case GL_DEBUG_SEVERITY_HIGH_ARB: return "high";
+	case GL_DEBUG_SEVERITY_MEDIUM_ARB: return "medium";
+	case GL_DEBUG_SEVERITY_LOW_ARB: return "low";
+	default: return "unknown";
 	}
+}
 
 }  // namespace
 

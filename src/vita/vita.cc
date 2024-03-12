@@ -201,7 +201,7 @@ int run_main(MakeAppFunction make_app)
 	ImGuiIO& io = ImGui::GetIO();
 	(void) io;
 	ImGui::StyleColorsDark();
-	
+
 	ImGui_ImplSDL2_InitForOpenGL(sdl_window, sdl_glcontext);
 	ImGui_ImplOpenGL3_Init(glsl_version);
 

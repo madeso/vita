@@ -21,7 +21,5 @@ int run_main(MakeAppFunction make_app);
 #define IMPLEMENT_MAIN(APP) \
 	int main(int, char**) \
 	{ \
-		return run_main( \
-			[]() -> std::unique_ptr<App> { return std::make_unique<APP>(); } \
-		); \
+		return run_main([]() -> std::unique_ptr<App> { return std::make_unique<APP>(); }); \
 	}
