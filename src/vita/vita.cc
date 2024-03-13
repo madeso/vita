@@ -29,12 +29,13 @@ int app_main(MakeAppFunction make_app, SDL_Window* sdl_window)
 	auto last = SDL_GetPerformanceCounter();
 	while (running)
 	{
-		app->on_frame();
 		const auto now = SDL_GetPerformanceCounter();
 		const auto diff = static_cast<float>(now - last);
 		const auto freq = static_cast<float>(SDL_GetPerformanceFrequency());
 		const auto dt = frame_skip > 0 ? 0.0f : diff / freq;
 		last = now;
+
+		app->on_frame(dt);
 
 		if (frame_skip > 0)
 		{
@@ -93,7 +94,7 @@ int app_main(MakeAppFunction make_app, SDL_Window* sdl_window)
 
 
 		// render
-		app->on_render(window_width, window_height, dt);
+		app->on_render(window_width, window_height);
 
 		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 		SDL_GL_SwapWindow(sdl_window);

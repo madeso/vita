@@ -8,9 +8,9 @@
 
 struct App
 {
-	virtual void on_frame() = 0;
+	virtual void on_frame(float dt) = 0;
 	virtual void on_gui() = 0;
-	virtual void on_render(int x, int y, float dt) = 0;
+	virtual void on_render(int x, int y) = 0;
 
 	virtual ~App() = default;
 };
