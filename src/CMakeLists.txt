@@ -10,6 +10,18 @@ set(src_base
     vita/dependency_sdl.cc vita/dependency_sdl.h
     vita/result.cc vita/result.h
     vita/str.cc vita/str.h
+
+    vita/anim/attribute.cc vita/anim/attribute.h
+    vita/anim/draw.cc vita/anim/draw.h
+    vita/anim/indexbuffer.cc vita/anim/indexbuffer.h
+    vita/anim/mat4.cc vita/anim/mat4.h
+    vita/anim/quat.cc vita/anim/quat.h
+    vita/anim/shader.cc vita/anim/shader.h
+    vita/anim/texture.cc vita/anim/texture.h
+    vita/anim/transform.cc vita/anim/transform.h
+    vita/anim/uniform.cc vita/anim/uniform.h
+    vita/anim/vec2.h vita/anim/vec3.cc
+    vita/anim/vec3.h vita/anim/vec4.h
     
     vita/vita.cc vita/vita.h
     vita/opengl_utils.cc vita/opengl_utils.h
@@ -73,6 +85,8 @@ add_library(vita::vita ALIAS vita)
 
 set(src_test
     vita/main.test.cc
+
+    vita/anim/mat4.test.cc
 )
 add_executable(test
     ${src_test}
