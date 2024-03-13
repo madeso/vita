@@ -5,14 +5,6 @@
 #include "vita/anim/vec4.h"
 #include "vita/anim/quat.h"
 
-// template Attribute<int>;
-// template Attribute<float>;
-// template Attribute<vec2>;
-// template Attribute<vec3>;
-// template Attribute<vec4>;
-// template Attribute<ivec4>;
-// template Attribute<quat>;
-
 template<typename T>
 Attribute<T>::Attribute()
 {
@@ -113,3 +105,11 @@ void Attribute<T>::UnBindFrom(unsigned int slot)
 	glDisableVertexAttribArray(slot);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
+
+template class Attribute<int>;
+template class Attribute<float>;
+template class Attribute<vec2>;
+template class Attribute<vec3>;
+template class Attribute<vec4>;
+template class Attribute<ivec4>;
+template class Attribute<quat>;
