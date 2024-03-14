@@ -14,7 +14,7 @@ Shader::Shader()
 	mHandle = glCreateProgram();
 }
 
-Shader::Shader(const std::string& vertex, const std::string& fragment)
+Shader::Shader(const Source& vertex, const Source& fragment)
 {
 	mHandle = glCreateProgram();
 	Load(vertex, fragment);
@@ -25,12 +25,12 @@ Shader::~Shader()
 	glDeleteProgram(mHandle);
 }
 
-std::string Shader::ReadFile(const std::string& path)
+Source ReadFile(const std::string& path)
 {
 	std::ifstream file(path);
 	std::stringstream contents;
 	contents << file.rdbuf();
-	return contents.str();
+	return {contents.str()};
 }
 
 unsigned int Shader::CompileVertexShader(const std::string& vertex)
@@ -168,30 +168,10 @@ void Shader::PopulateUniforms()
 	glUseProgram(0);
 }
 
-void Shader::Load(const std::string& vertex, const std::string& fragment)
+void Shader::Load(const Source& vertex, const Source& fragment)
 {
-	std::ifstream f(vertex.c_str());
-	bool vertFile = f.good();
-	f.close();
-
-	f = std::ifstream(vertex.c_str());
-	bool fragFile = f.good();
-	f.close();
-
-	std::string v_source = vertex;
-	if (vertFile)
-	{
-		v_source = ReadFile(vertex);
-	}
-
-	std::string f_source = fragment;
-	if (fragFile)
-	{
-		f_source = ReadFile(fragment);
-	}
-
-	unsigned int v_shader = CompileVertexShader(v_source);
-	unsigned int f_shader = CompileFragmentShader(f_source);
+	unsigned int v_shader = CompileVertexShader(vertex.source);
+	unsigned int f_shader = CompileFragmentShader(fragment.source);
 	if (LinkShaders(v_shader, f_shader))
 	{
 		PopulateAttributes();

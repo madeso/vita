@@ -1,17 +1,18 @@
 #pragma once
 
+struct Source
+{
+	std::string source;
+};
+
+Source ReadFile(const std::string& path);
+
 class Shader
 {
-   private:
-
 	unsigned int mHandle;
-
 	std::unordered_map<std::string, unsigned int> mAttributes;
 	std::unordered_map<std::string, unsigned int> mUniforms;
 
-   private:
-
-	std::string ReadFile(const std::string& path);
 	unsigned int CompileVertexShader(const std::string& vertex);
 	unsigned int CompileFragmentShader(const std::string& fragment);
 	bool LinkShaders(unsigned int vertex, unsigned int fragment);
@@ -19,18 +20,19 @@ class Shader
 	void PopulateAttributes();
 	void PopulateUniforms();
 
-   private:
-
-	Shader(const Shader&);
-	Shader& operator=(const Shader&);
+	Shader(Shader&&) = delete;
+	void operator=(Shader&&) = delete;
+	Shader(const Shader&) = delete;
+	void operator=(const Shader&) = delete;
+	Shader(Shader&) = delete;
 
    public:
 
 	Shader();
-	Shader(const std::string& vertex, const std::string& fragment);
+	Shader(const Source& vertex, const Source& fragment);
 	~Shader();
 
-	void Load(const std::string& vertex, const std::string& fragment);
+	void Load(const Source& vertex, const Source& fragment);
 
 	void Bind();
 	void UnBind();
