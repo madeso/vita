@@ -12,10 +12,16 @@ Texture::Texture()
 	glGenTextures(1, &mHandle);
 }
 
-Texture::Texture(const char* path)
+Texture::Texture(const TextureFromFile& path)
 {
 	glGenTextures(1, &mHandle);
-	Load(path);
+	LoadFromFile(path);
+}
+
+Texture::Texture(const TextureData& data)
+{
+	glGenTextures(1, &mHandle);
+	LoadFromMemory(data);
 }
 
 Texture::~Texture()
@@ -23,15 +29,35 @@ Texture::~Texture()
 	glDeleteTextures(1, &mHandle);
 }
 
-void Texture::Load(const char* path)
+void Texture::LoadFromFile(const TextureFromFile& path)
 {
 	glBindTexture(GL_TEXTURE_2D, mHandle);
 
 	int width, height, channels;
-	unsigned char* data = stbi_load(path, &width, &height, &channels, 4);
+	unsigned char* data = stbi_load(path.path.c_str(), &width, &height, &channels, 4);
+
+	CompleteLoad(path.path, width, height, channels, data);
+}
+
+void Texture::LoadFromMemory(const TextureData& tex)
+{
+	glBindTexture(GL_TEXTURE_2D, mHandle);
+
+	int width, height, channels;
+
+	auto* data = stbi_load_from_memory(
+		static_cast<const stbi_uc*>(tex.buffer), tex.length, &width, &height, &channels, 4
+	);
+	CompleteLoad(tex.name, width, height, channels, data);
+}
+
+void Texture::CompleteLoad(
+	const std::string& name, int width, int height, int channels, unsigned char* data
+)
+{
 	if (data == nullptr)
 	{
-		std::cerr << "Failed to load image " << path << "\n";
+		std::cerr << "Failed to load image " << name << "\n";
 	}
 	else
 	{

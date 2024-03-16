@@ -5,7 +5,7 @@ struct Source
 	std::string source;
 };
 
-Source ReadFile(const std::string& path);
+Source ReadStringFile(const std::string& path);
 
 class Shader
 {

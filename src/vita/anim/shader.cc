@@ -25,7 +25,7 @@ Shader::~Shader()
 	glDeleteProgram(mHandle);
 }
 
-Source ReadFile(const std::string& path)
+Source ReadStringFile(const std::string& path)
 {
 	std::ifstream file(path);
 	std::stringstream contents;

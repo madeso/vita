@@ -1,5 +1,17 @@
 #pragma once
 
+struct TextureFromFile
+{
+	std::string path;
+};
+
+struct TextureData
+{
+	const void* buffer;
+	int length;
+	std::string name;
+};
+
 class Texture
 {
    protected:
@@ -11,16 +23,24 @@ class Texture
 
    private:
 
-	Texture(const Texture& other);
-	Texture& operator=(const Texture& other);
+	Texture(Texture&& other) = delete;
+	void operator=(Texture&& other) = delete;
+	Texture(const Texture& other) = delete;
+	void operator=(const Texture& other) = delete;
 
    public:
 
 	Texture();
-	Texture(const char* path);
+	Texture(const TextureFromFile& path);
+	Texture(const TextureData& data);
 	~Texture();
 
-	void Load(const char* path);
+	void LoadFromFile(const TextureFromFile& path);
+	void LoadFromMemory(const TextureData& data);
+
+	void CompleteLoad(
+		const std::string& name, int width, int height, int channels, unsigned char* data
+	);
 
 	void Set(unsigned int uniformIndex, unsigned int textureIndex);
 	void UnSet(unsigned int textureIndex);

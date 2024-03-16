@@ -9,6 +9,7 @@
 #include "vita/anim/quat.h"
 #include "vita/anim/uniform.h"
 #include "vita/anim/draw.h"
+#include "vita/assets.h"
 
 constexpr float DEG2RAD = 0.0174533f;
 
@@ -37,8 +38,8 @@ struct Sample : public App
 Sample::Sample()
 {
 	mRotation = 0.0f;
-	mShader = new Shader("Shaders/static.vert", "Shaders/lit.frag");
-	mDisplayTexture = new Texture("Assets/uv.png");
+	mShader = new Shader(assets::static_shader(), assets::lit_shader());
+	mDisplayTexture = new Texture(assets::uv_texture());
 
 	mVertexPositions = new Attribute<vec3>();
 	mVertexNormals = new Attribute<vec3>();

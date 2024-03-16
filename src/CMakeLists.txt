@@ -1,4 +1,9 @@
 embed(src_assets
+    AS_TEXT
+        vita/assets/lit.frag
+        vita/assets/static.vert
+    AS_BINARY
+        vita/assets/uv.png
 )
 
 set(src_render
@@ -25,6 +30,7 @@ set(src_base
     
     vita/vita.cc vita/vita.h
     vita/opengl_utils.cc vita/opengl_utils.h
+    vita/assets.cc vita/assets.h
     
     vita/compiler_warning.h
     vita/log.h
