@@ -11,7 +11,11 @@ constexpr int starth_height = 600;
 
 int app_main(MakeAppFunction make_app, SDL_Window* sdl_window)
 {
-	////////////////////////////////////////////////////////////////
+	// rendering doesn't work without this ugly array object hack...
+	GLuint ugly_array_object_hack = 0;
+	glGenVertexArrays(1, &ugly_array_object_hack);
+	glBindVertexArray(ugly_array_object_hack);
+
 	auto app = make_app();
 
 
@@ -81,9 +85,17 @@ int app_main(MakeAppFunction make_app, SDL_Window* sdl_window)
 			}
 		}
 
+		glViewport(0, 0, window_width, window_height);
+		glEnable(GL_DEPTH_TEST);
+		glEnable(GL_CULL_FACE);
+		glPointSize(5.0f);
+
+		glClearColor(0.5f, 0.6f, 0.7f, 1.0f);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+		float aspect = (float) window_width / (float) window_height;
+
 
 		// imgui windows
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		ImGui_ImplOpenGL3_NewFrame();
 		ImGui_ImplSDL2_NewFrame();
 		ImGui::NewFrame();
@@ -94,12 +106,16 @@ int app_main(MakeAppFunction make_app, SDL_Window* sdl_window)
 
 
 		// render
-		app->on_render(window_width, window_height);
+		glBindVertexArray(ugly_array_object_hack);
+		app->on_render(aspect);
 
 		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 		SDL_GL_SwapWindow(sdl_window);
 	}
 
+	glBindVertexArray(0);
+	glDeleteVertexArrays(1, &ugly_array_object_hack);
+	ugly_array_object_hack = 0;
 	return 0;
 }
 

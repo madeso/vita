@@ -32,7 +32,7 @@ struct Sample : public App
 	{
 	}
 
-	void on_render(int, int) override;
+	void on_render(float) override;
 };
 
 Sample::Sample()
@@ -83,9 +83,8 @@ void Sample::on_frame(float inDeltaTime)
 	}
 }
 
-void Sample::on_render(int width, int height)
+void Sample::on_render(float inAspectRatio)
 {
-	float inAspectRatio = static_cast<float>(width) / static_cast<float>(height);
 	mat4 projection = perspective(60.0f, inAspectRatio, 0.01f, 1000.0f);
 	mat4 view = lookAt(vec3(0, 0, -5), vec3(0, 0, 0), vec3(0, 1, 0));
 	mat4 model = quatToMat4(angleAxis(mRotation * DEG2RAD, vec3(0, 0, 1)));

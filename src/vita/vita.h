@@ -10,7 +10,7 @@ struct App
 {
 	virtual void on_frame(float dt) = 0;
 	virtual void on_gui() = 0;
-	virtual void on_render(int x, int y) = 0;
+	virtual void on_render(float aspect) = 0;
 
 	virtual ~App() = default;
 };
