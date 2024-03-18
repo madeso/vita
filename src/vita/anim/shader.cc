@@ -111,11 +111,13 @@ void Shader::PopulateAttributes()
 	for (int i = 0; i < count; ++i)
 	{
 		std::memset(name, 0, sizeof(char) * STRING_LENGTH);
-		glGetActiveAttrib(mHandle, (GLuint) i, STRING_LENGTH, &length, &size, &type, name);
-		int attrib = glGetAttribLocation(mHandle, name);
+		glGetActiveAttrib(
+			mHandle, static_cast<GLuint>(i), STRING_LENGTH, &length, &size, &type, name
+		);
+		const auto attrib = glGetAttribLocation(mHandle, name);
 		if (attrib >= 0)
 		{
-			mAttributes[name] = attrib;
+			mAttributes[name] = static_cast<unsigned int>(attrib);
 		}
 	}
 
@@ -124,7 +126,7 @@ void Shader::PopulateAttributes()
 
 void Shader::PopulateUniforms()
 {
-	int count = -1;
+	int count = 0;
 	int length;
 	char name[STRING_LENGTH];
 	int size;
@@ -137,7 +139,9 @@ void Shader::PopulateUniforms()
 	for (int i = 0; i < count; ++i)
 	{
 		std::memset(name, 0, sizeof(char) * STRING_LENGTH);
-		glGetActiveUniform(mHandle, (GLuint) i, STRING_LENGTH, &length, &size, &type, name);
+		glGetActiveUniform(
+			mHandle, static_cast<GLuint>(i), STRING_LENGTH, &length, &size, &type, name
+		);
 
 		int uniform = glGetUniformLocation(mHandle, name);
 		if (uniform >= 0)
@@ -146,7 +150,9 @@ void Shader::PopulateUniforms()
 			std::size_t found = uniformName.find('[');
 			if (found != std::string::npos)
 			{
-				uniformName.erase(uniformName.begin() + found, uniformName.end());
+				uniformName.erase(
+					uniformName.begin() + static_cast<std::ptrdiff_t>(found), uniformName.end()
+				);
 				// Populate subscripted names too
 				unsigned int uniformIndex = 0;
 				while (true)
@@ -206,14 +212,14 @@ unsigned int Shader::GetAttribute(const std::string& name)
 	return it->second;
 }
 
-unsigned int Shader::GetUniform(const std::string& name)
+int Shader::GetUniform(const std::string& name)
 {
 	auto it = mUniforms.find(name);
 	if (it == mUniforms.end())
 	{
 		std::cout << "Retrieving bad uniform index: " << name << "\n";
-		mUniforms[name] = 0;
-		return 0;
+		mUniforms[name] = -1;
+		return -1;
 	}
 	return it->second;
 }

@@ -1,14 +1,21 @@
 #pragma once
 
+#pragma pack(push, 1)
+
 template<typename T>
 struct TVec2
 {
 	T x;
 	T y;
 
+	const T* data_ptr() const
+	{
+		return &x;
+	}
+
 	TVec2()
-		: x(T(0))
-		, y(T(0))
+		: x(static_cast<T>(0))
+		, y(static_cast<T>(0))
 	{
 	}
 
@@ -24,6 +31,8 @@ struct TVec2
 	{
 	}
 };
+
+#pragma pack(pop)
 
 typedef TVec2<float> vec2;
 typedef TVec2<int> ivec2;

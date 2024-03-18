@@ -2,11 +2,18 @@
 
 constexpr float VEC3_EPSILON = 0.000001f;
 
+#pragma pack(push, 1)
+
 struct vec3
 {
 	float x;
 	float y;
 	float z;
+
+	const float* data_ptr() const
+	{
+		return &x;
+	}
 
 	// float v[3];
 
@@ -31,6 +38,8 @@ struct vec3
 	{
 	}
 };
+
+#pragma pack(pop)
 
 vec3 operator+(const vec3& l, const vec3& r);
 vec3 operator-(const vec3& l, const vec3& r);

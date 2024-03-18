@@ -32,11 +32,11 @@ quat fromTo(const vec3& from, const vec3& to)
 	else if (f == t * -1.0f)
 	{
 		vec3 ortho = vec3(1, 0, 0);
-		if (fabsf(f.y) < fabsf(f.x))
+		if (std::abs(f.y) < std::abs(f.x))
 		{
 			ortho = vec3(0, 1, 0);
 		}
-		if (fabsf(f.z) < fabs(f.y) && fabs(f.z) < fabsf(f.x))
+		if (std::abs(f.z) < std::abs(f.y) && std::abs(f.z) < std::abs(f.x))
 		{
 			ortho = vec3(0, 0, 1);
 		}

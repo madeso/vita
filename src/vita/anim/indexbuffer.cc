@@ -33,5 +33,5 @@ void IndexBuffer::Set(unsigned int* inputArray, unsigned int arrayLengt)
 
 void IndexBuffer::Set(std::vector<unsigned int>& input)
 {
-	Set(&input[0], (unsigned int) input.size());
+	Set(&input[0], static_cast<unsigned int>(input.size()));
 }

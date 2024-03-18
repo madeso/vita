@@ -11,7 +11,7 @@ class Shader
 {
 	unsigned int mHandle;
 	std::unordered_map<std::string, unsigned int> mAttributes;
-	std::unordered_map<std::string, unsigned int> mUniforms;
+	std::unordered_map<std::string, int> mUniforms;
 
 	unsigned int CompileVertexShader(const std::string& vertex);
 	unsigned int CompileFragmentShader(const std::string& fragment);
@@ -38,6 +38,6 @@ class Shader
 	void UnBind();
 
 	unsigned int GetAttribute(const std::string& name);
-	unsigned int GetUniform(const std::string& name);
+	int GetUniform(const std::string& name);
 	unsigned int GetHandle();
 };

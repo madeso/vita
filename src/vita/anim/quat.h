@@ -5,12 +5,19 @@
 
 constexpr float QUAT_EPSILON = 0.000001f;
 
+#pragma pack(push, 1)
+
 struct quat
 {
 	float x;
 	float y;
 	float z;
 	float w;
+
+	const float* data_ptr() const
+	{
+		return &x;
+	}
 
 	// struct
 	// {
@@ -37,6 +44,8 @@ struct quat
 	{
 	}
 };
+
+#pragma pack(pop)
 
 quat angleAxis(float angle, const vec3& axis);
 quat fromTo(const vec3& from, const vec3& to);

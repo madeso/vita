@@ -22,9 +22,9 @@ Transform inverse(const Transform& t)
 
 	inv.rotation = inverse(t.rotation);
 
-	inv.scale.x = fabs(t.scale.x) < VEC3_EPSILON ? 0.0f : 1.0f / t.scale.x;
-	inv.scale.y = fabs(t.scale.y) < VEC3_EPSILON ? 0.0f : 1.0f / t.scale.y;
-	inv.scale.z = fabs(t.scale.z) < VEC3_EPSILON ? 0.0f : 1.0f / t.scale.z;
+	inv.scale.x = std::abs(t.scale.x) < VEC3_EPSILON ? 0.0f : 1.0f / t.scale.x;
+	inv.scale.y = std::abs(t.scale.y) < VEC3_EPSILON ? 0.0f : 1.0f / t.scale.y;
+	inv.scale.z = std::abs(t.scale.z) < VEC3_EPSILON ? 0.0f : 1.0f / t.scale.z;
 
 	vec3 invTranslation = t.position * -1.0f;
 	inv.position = inv.rotation * (inv.scale * invTranslation);
@@ -97,9 +97,7 @@ Transform mat4ToTransform(const mat4& m)
 	out.position = vec3(m[12], m[13], m[14]);
 	out.rotation = mat4ToQuat(m);
 
-	mat4 rotScaleMat(
-		m[0], m[1], m[2], 0, m[4], m[5], m[6], 0, m[8], m[9], m[10], 0, 0, 0, 0, 1
-	);
+	mat4 rotScaleMat(m[0], m[1], m[2], 0, m[4], m[5], m[6], 0, m[8], m[9], m[10], 0, 0, 0, 0, 1);
 	mat4 invRotMat = quatToMat4(inverse(out.rotation));
 	mat4 scaleSkewMat = rotScaleMat * invRotMat;
 

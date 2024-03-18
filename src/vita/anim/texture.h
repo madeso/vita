@@ -42,7 +42,7 @@ class Texture
 		const std::string& name, int width, int height, int channels, unsigned char* data
 	);
 
-	void Set(unsigned int uniformIndex, unsigned int textureIndex);
+	void Set(int uniformIndex, unsigned int textureIndex);
 	void UnSet(unsigned int textureIndex);
 	unsigned int GetHandle();
 };

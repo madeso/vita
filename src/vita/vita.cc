@@ -92,7 +92,7 @@ int app_main(MakeAppFunction make_app, SDL_Window* sdl_window)
 
 		glClearColor(0.5f, 0.6f, 0.7f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
-		float aspect = (float) window_width / (float) window_height;
+		float aspect = static_cast<float>(window_width) / static_cast<float>(window_height);
 
 
 		// imgui windows

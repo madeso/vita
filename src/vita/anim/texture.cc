@@ -74,12 +74,12 @@ void Texture::CompleteLoad(
 
 	glBindTexture(GL_TEXTURE_2D, 0);
 
-	mWidth = width;
-	mHeight = height;
-	mChannels = channels;
+	mWidth = static_cast<unsigned int>(width);
+	mHeight = static_cast<unsigned int>(height);
+	mChannels = static_cast<unsigned int>(channels);
 }
 
-void Texture::Set(unsigned int uniformIndex, unsigned int textureIndex)
+void Texture::Set(int uniformIndex, unsigned int textureIndex)
 {
 	glActiveTexture(GL_TEXTURE0 + textureIndex);
 	glBindTexture(GL_TEXTURE_2D, mHandle);

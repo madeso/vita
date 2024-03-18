@@ -12,7 +12,7 @@ class Uniform
 
    public:
 
-	static void Set(unsigned int slot, const T& value);
-	static void Set(unsigned int slot, T* inputArray, unsigned int arrayLength);
-	static void Set(unsigned int slot, std::vector<T>& inputArray);
+	static void Set(int slot, const T& value);
+	static void Set(int slot, const T* inputArray, unsigned int arrayLength);
+	static void Set(int slot, const std::vector<T>& inputArray);
 };

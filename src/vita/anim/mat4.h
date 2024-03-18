@@ -5,6 +5,8 @@
 
 constexpr float MAT4_EPSILON = 0.000001f;
 
+#pragma pack(push, 1)
+
 struct mat4
 {
 	// float v[16];
@@ -15,6 +17,11 @@ struct mat4
 	vec4 up() const;
 	vec4 forward() const;
 	vec4 position() const;
+
+	const float* data_ptr() const
+	{
+		return &xx;
+	}
 
 	// row 1     row 2     row 3     row 4
 	/* column 1 */
@@ -160,6 +167,8 @@ struct mat4
 	{
 	}
 };
+
+#pragma pack(pop)
 
 bool operator==(const mat4& a, const mat4& b);
 bool operator!=(const mat4& a, const mat4& b);
