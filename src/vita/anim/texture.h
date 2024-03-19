@@ -12,7 +12,7 @@ struct TextureData
 	std::string name;
 };
 
-class Texture
+struct Texture
 {
    protected:
 

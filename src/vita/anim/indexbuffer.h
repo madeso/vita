@@ -1,6 +1,6 @@
 #pragma once
 
-class IndexBuffer
+struct IndexBuffer
 {
    public:
 

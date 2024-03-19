@@ -1,7 +1,7 @@
 #pragma once
 
 template<typename T>
-class Attribute
+struct Attribute
 {
    protected:
 

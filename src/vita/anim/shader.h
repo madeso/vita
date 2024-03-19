@@ -7,7 +7,7 @@ struct Source
 
 Source ReadStringFile(const std::string& path);
 
-class Shader
+struct Shader
 {
 	unsigned int mHandle;
 	std::unordered_map<std::string, unsigned int> mAttributes;

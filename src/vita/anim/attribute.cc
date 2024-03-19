@@ -106,10 +106,10 @@ void Attribute<T>::UnBindFrom(unsigned int slot)
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
-template class Attribute<int>;
-template class Attribute<float>;
-template class Attribute<vec2>;
-template class Attribute<vec3>;
-template class Attribute<vec4>;
-template class Attribute<ivec4>;
-template class Attribute<quat>;
+template struct Attribute<int>;
+template struct Attribute<float>;
+template struct Attribute<vec2>;
+template struct Attribute<vec3>;
+template struct Attribute<vec4>;
+template struct Attribute<ivec4>;
+template struct Attribute<quat>;

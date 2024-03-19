@@ -48,12 +48,12 @@ void Uniform<T>::Set(int slot, const std::vector<T>& value)
 	Set(slot, &value[0], static_cast<unsigned int>(value.size()));
 }
 
-template class Uniform<int>;
-template class Uniform<ivec4>;
-template class Uniform<ivec2>;
-template class Uniform<float>;
-template class Uniform<vec2>;
-template class Uniform<vec3>;
-template class Uniform<vec4>;
-template class Uniform<quat>;
-template class Uniform<mat4>;
+template struct Uniform<int>;
+template struct Uniform<ivec4>;
+template struct Uniform<ivec2>;
+template struct Uniform<float>;
+template struct Uniform<vec2>;
+template struct Uniform<vec3>;
+template struct Uniform<vec4>;
+template struct Uniform<quat>;
+template struct Uniform<mat4>;

@@ -2,7 +2,7 @@
 
 #include "vita/anim/indexbuffer.h"
 
-enum class DrawMode
+enum struct DrawMode
 {
 	Points,
 	LineStrip,

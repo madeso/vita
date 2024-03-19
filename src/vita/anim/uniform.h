@@ -1,7 +1,7 @@
 #pragma once
 
 template<typename T>
-class Uniform
+struct Uniform
 {
    private:
 
