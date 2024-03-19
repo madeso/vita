@@ -30,6 +30,6 @@ struct Texture
 	Texture(const Texture& other) = delete;
 	void operator=(const Texture& other) = delete;
 
-	void Set(int uniformIndex, unsigned int textureIndex);
-	void UnSet(unsigned int textureIndex);
+	void bind(int uniformIndex, unsigned int textureIndex);
+	void unbind(unsigned int textureIndex);
 };

@@ -101,11 +101,11 @@ void Sample::on_render(float inAspectRatio)
 
 	Uniform<vec3>::Set(mShader->GetUniform("light"), vec3(0, 0, 1));
 
-	mDisplayTexture->Set(mShader->GetUniform("tex0"), 0);
+	mDisplayTexture->bind(mShader->GetUniform("tex0"), 0);
 
 	Draw(*mIndexBuffer, DrawMode::Triangles);
 
-	mDisplayTexture->UnSet(0);
+	mDisplayTexture->unbind(0);
 
 	mVertexPositions->UnBindFrom(mShader->GetAttribute("position"));
 	mVertexNormals->UnBindFrom(mShader->GetAttribute("normal"));

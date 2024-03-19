@@ -72,14 +72,14 @@ Texture::~Texture()
 	handle = 0;
 }
 
-void Texture::Set(int uniformIndex, unsigned int textureIndex)
+void Texture::bind(int uniformIndex, unsigned int textureIndex)
 {
 	glActiveTexture(GL_TEXTURE0 + textureIndex);
 	glBindTexture(GL_TEXTURE_2D, handle);
 	glUniform1i(uniformIndex, textureIndex);
 }
 
-void Texture::UnSet(unsigned int textureIndex)
+void Texture::unbind(unsigned int textureIndex)
 {
 	glActiveTexture(GL_TEXTURE0 + textureIndex);
 	glBindTexture(GL_TEXTURE_2D, 0);
