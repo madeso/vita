@@ -3,28 +3,21 @@
 template<typename T>
 struct Attribute
 {
-   protected:
+	unsigned int handle;
+	unsigned int count;
 
-	unsigned int mHandle;
-	unsigned int mCount;
+	Attribute(const Attribute& other) = delete;
+	void operator=(const Attribute& other) = delete;
 
-   private:
-
-	Attribute(const Attribute& other);
-	Attribute& operator=(const Attribute& other);
-	void SetAttribPointer(unsigned int slot);
-
-   public:
+	Attribute(Attribute&& other) = delete;
+	void operator=(Attribute&& other) = delete;
 
 	Attribute();
 	~Attribute();
 
-	void Set(T* inputArray, unsigned int arrayLength);
-	void Set(std::vector<T>& input);
+	void set_ptr(T* inputArray, unsigned int arrayLength);
+	void set(std::vector<T>& input);
 
-	void BindTo(unsigned int slot);
-	void UnBindFrom(unsigned int slot);
-
-	unsigned int Count();
-	unsigned int GetHandle();
+	void bind_to(unsigned int slot);
+	void unbind_from(unsigned int slot);
 };

@@ -51,18 +51,18 @@ Sample::Sample()
 	positions.push_back(vec3(-1, 1, 0));
 	positions.push_back(vec3(1, -1, 0));
 	positions.push_back(vec3(1, 1, 0));
-	mVertexPositions->Set(positions);
+	mVertexPositions->set(positions);
 
 	std::vector<vec3> normals;
 	normals.resize(4, vec3(0, 0, 1));
-	mVertexNormals->Set(normals);
+	mVertexNormals->set(normals);
 
 	std::vector<vec2> uvs;
 	uvs.push_back(vec2(0, 0));
 	uvs.push_back(vec2(0, 1));
 	uvs.push_back(vec2(1, 0));
 	uvs.push_back(vec2(1, 1));
-	mVertexTexCoords->Set(uvs);
+	mVertexTexCoords->set(uvs);
 
 	std::vector<unsigned int> indices;
 	indices.push_back(0);
@@ -91,9 +91,9 @@ void Sample::on_render(float inAspectRatio)
 
 	mShader->Bind();
 
-	mVertexPositions->BindTo(mShader->GetAttribute("position"));
-	mVertexNormals->BindTo(mShader->GetAttribute("normal"));
-	mVertexTexCoords->BindTo(mShader->GetAttribute("texCoord"));
+	mVertexPositions->bind_to(mShader->GetAttribute("position"));
+	mVertexNormals->bind_to(mShader->GetAttribute("normal"));
+	mVertexTexCoords->bind_to(mShader->GetAttribute("texCoord"));
 
 	Uniform<mat4>::Set(mShader->GetUniform("model"), model);
 	Uniform<mat4>::Set(mShader->GetUniform("view"), view);
@@ -107,9 +107,9 @@ void Sample::on_render(float inAspectRatio)
 
 	mDisplayTexture->unbind(0);
 
-	mVertexPositions->UnBindFrom(mShader->GetAttribute("position"));
-	mVertexNormals->UnBindFrom(mShader->GetAttribute("normal"));
-	mVertexTexCoords->UnBindFrom(mShader->GetAttribute("texCoord"));
+	mVertexPositions->unbind_from(mShader->GetAttribute("position"));
+	mVertexNormals->unbind_from(mShader->GetAttribute("normal"));
+	mVertexTexCoords->unbind_from(mShader->GetAttribute("texCoord"));
 
 	mShader->UnBind();
 }

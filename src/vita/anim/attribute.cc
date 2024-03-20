@@ -6,102 +6,93 @@
 #include "vita/anim/quat.h"
 
 template<typename T>
-Attribute<T>::Attribute()
-{
-	glGenBuffers(1, &mHandle);
-	mCount = 0;
-}
-
-template<typename T>
-Attribute<T>::~Attribute()
-{
-	glDeleteBuffers(1, &mHandle);
-}
-
-template<typename T>
-unsigned int Attribute<T>::Count()
-{
-	return mCount;
-}
-
-template<typename T>
-unsigned int Attribute<T>::GetHandle()
-{
-	return mHandle;
-}
-
-template<typename T>
-void Attribute<T>::Set(T* inputArray, unsigned int arrayLength)
-{
-	mCount = arrayLength;
-	unsigned int size = sizeof(T);
-
-	glBindBuffer(GL_ARRAY_BUFFER, mHandle);
-	glBufferData(GL_ARRAY_BUFFER, size * mCount, inputArray, GL_STREAM_DRAW);
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-}
-
-template<typename T>
-void Attribute<T>::Set(std::vector<T>& input)
-{
-	Set(&input[0], static_cast<unsigned int>(input.size()));
-}
+void set_attibute_pointer(unsigned int slot);
 
 template<>
-void Attribute<int>::SetAttribPointer(unsigned int slot)
+void set_attibute_pointer<int>(unsigned int slot)
 {
 	glVertexAttribIPointer(slot, 1, GL_INT, 0, nullptr);
 }
 
 template<>
-void Attribute<ivec4>::SetAttribPointer(unsigned int slot)
+void set_attibute_pointer<ivec4>(unsigned int slot)
 {
 	glVertexAttribIPointer(slot, 4, GL_INT, 0, nullptr);
 }
 
 template<>
-void Attribute<float>::SetAttribPointer(unsigned int slot)
+void set_attibute_pointer<float>(unsigned int slot)
 {
 	glVertexAttribPointer(slot, 1, GL_FLOAT, GL_FALSE, 0, nullptr);
 }
 
 template<>
-void Attribute<vec2>::SetAttribPointer(unsigned int slot)
+void set_attibute_pointer<vec2>(unsigned int slot)
 {
 	glVertexAttribPointer(slot, 2, GL_FLOAT, GL_FALSE, 0, nullptr);
 }
 
 template<>
-void Attribute<vec3>::SetAttribPointer(unsigned int slot)
+void set_attibute_pointer<vec3>(unsigned int slot)
 {
 	glVertexAttribPointer(slot, 3, GL_FLOAT, GL_FALSE, 0, nullptr);
 }
 
 template<>
-void Attribute<vec4>::SetAttribPointer(unsigned int slot)
+void set_attibute_pointer<vec4>(unsigned int slot)
 {
 	glVertexAttribPointer(slot, 4, GL_FLOAT, GL_FALSE, 0, nullptr);
 }
 
 template<>
-void Attribute<quat>::SetAttribPointer(unsigned int slot)
+void set_attibute_pointer<quat>(unsigned int slot)
 {
 	glVertexAttribPointer(slot, 4, GL_FLOAT, GL_FALSE, 0, nullptr);
 }
 
 template<typename T>
-void Attribute<T>::BindTo(unsigned int slot)
+Attribute<T>::Attribute()
 {
-	glBindBuffer(GL_ARRAY_BUFFER, mHandle);
-	glEnableVertexAttribArray(slot);
-	SetAttribPointer(slot);
+	glGenBuffers(1, &handle);
+	count = 0;
+}
+
+template<typename T>
+Attribute<T>::~Attribute()
+{
+	glDeleteBuffers(1, &handle);
+}
+
+template<typename T>
+void Attribute<T>::set_ptr(T* inputArray, unsigned int arrayLength)
+{
+	count = arrayLength;
+	unsigned int size = sizeof(T);
+
+	glBindBuffer(GL_ARRAY_BUFFER, handle);
+	glBufferData(GL_ARRAY_BUFFER, size * count, inputArray, GL_STREAM_DRAW);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
 template<typename T>
-void Attribute<T>::UnBindFrom(unsigned int slot)
+void Attribute<T>::set(std::vector<T>& input)
 {
-	glBindBuffer(GL_ARRAY_BUFFER, mHandle);
+	set_ptr(&input[0], static_cast<unsigned int>(input.size()));
+}
+
+template<typename T>
+void Attribute<T>::bind_to(unsigned int slot)
+{
+	glBindBuffer(GL_ARRAY_BUFFER, handle);
+	glEnableVertexAttribArray(slot);
+	set_attibute_pointer<T>(slot);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+}
+
+template<typename T>
+void Attribute<T>::unbind_from(unsigned int slot)
+{
+	glBindBuffer(GL_ARRAY_BUFFER, handle);
 	glDisableVertexAttribArray(slot);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
