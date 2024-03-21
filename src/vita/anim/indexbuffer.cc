@@ -1,37 +1,28 @@
 #include "vita/anim/indexbuffer.h"
 
 IndexBuffer::IndexBuffer()
+	: handle(0)
+	, count(0)
 {
-	glGenBuffers(1, &mHandle);
-	mCount = 0;
+	glGenBuffers(1, &handle);
 }
 
 IndexBuffer::~IndexBuffer()
 {
-	glDeleteBuffers(1, &mHandle);
+	glDeleteBuffers(1, &handle);
 }
 
-unsigned int IndexBuffer::Count()
+void IndexBuffer::Set(const unsigned int* inputArray, unsigned int arrayLength)
 {
-	return mCount;
-}
-
-unsigned int IndexBuffer::GetHandle()
-{
-	return mHandle;
-}
-
-void IndexBuffer::Set(unsigned int* inputArray, unsigned int arrayLengt)
-{
-	mCount = arrayLengt;
+	count = arrayLength;
 	unsigned int size = sizeof(unsigned int);
 
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mHandle);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, size * mCount, inputArray, GL_STATIC_DRAW);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, handle);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, size * count, inputArray, GL_STATIC_DRAW);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 }
 
-void IndexBuffer::Set(std::vector<unsigned int>& input)
+void IndexBuffer::Set(const std::vector<unsigned int>& input)
 {
 	Set(&input[0], static_cast<unsigned int>(input.size()));
 }

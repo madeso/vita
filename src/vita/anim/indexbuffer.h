@@ -2,24 +2,17 @@
 
 struct IndexBuffer
 {
-   public:
-
-	unsigned int mHandle;
-	unsigned int mCount;
-
-   private:
-
-	IndexBuffer(const IndexBuffer& other);
-	IndexBuffer& operator=(const IndexBuffer& other);
-
-   public:
+	unsigned int handle;
+	unsigned int count;
 
 	IndexBuffer();
 	~IndexBuffer();
 
-	void Set(unsigned int* inputArray, unsigned int arrayLengt);
-	void Set(std::vector<unsigned int>& input);
+	IndexBuffer(const IndexBuffer& other) = delete;
+	void operator=(const IndexBuffer& other) = delete;
+	IndexBuffer(IndexBuffer&& other) = delete;
+	void operator=(IndexBuffer&& other) = delete;
 
-	unsigned int Count();
-	unsigned int GetHandle();
+	void Set(const unsigned int* inputArray, unsigned int arrayLength);
+	void Set(const std::vector<unsigned int>& input);
 };
