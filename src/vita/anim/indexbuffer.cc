@@ -12,7 +12,7 @@ IndexBuffer::~IndexBuffer()
 	glDeleteBuffers(1, &handle);
 }
 
-void IndexBuffer::Set(const unsigned int* inputArray, unsigned int arrayLength)
+void IndexBuffer::set_array(const unsigned int* inputArray, unsigned int arrayLength)
 {
 	count = arrayLength;
 	unsigned int size = sizeof(unsigned int);
@@ -22,7 +22,7 @@ void IndexBuffer::Set(const unsigned int* inputArray, unsigned int arrayLength)
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 }
 
-void IndexBuffer::Set(const std::vector<unsigned int>& input)
+void IndexBuffer::set(const std::vector<unsigned int>& input)
 {
-	Set(&input[0], static_cast<unsigned int>(input.size()));
+	set_array(&input[0], static_cast<unsigned int>(input.size()));
 }

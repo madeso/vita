@@ -71,7 +71,7 @@ Sample::Sample()
 	indices.push_back(2);
 	indices.push_back(1);
 	indices.push_back(3);
-	mIndexBuffer->Set(indices);
+	mIndexBuffer->set(indices);
 }
 
 void Sample::on_frame(float inDeltaTime)

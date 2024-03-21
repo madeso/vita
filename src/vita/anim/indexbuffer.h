@@ -13,6 +13,6 @@ struct IndexBuffer
 	IndexBuffer(IndexBuffer&& other) = delete;
 	void operator=(IndexBuffer&& other) = delete;
 
-	void Set(const unsigned int* inputArray, unsigned int arrayLength);
-	void Set(const std::vector<unsigned int>& input);
+	void set_array(const unsigned int* inputArray, unsigned int arrayLength);
+	void set(const std::vector<unsigned int>& input);
 };
