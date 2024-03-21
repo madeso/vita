@@ -52,9 +52,10 @@ void set_attibute_pointer<quat>(unsigned int slot)
 
 template<typename T>
 Attribute<T>::Attribute()
+	: handle(0)
+	, count(0)
 {
 	glGenBuffers(1, &handle);
-	count = 0;
 }
 
 template<typename T>
