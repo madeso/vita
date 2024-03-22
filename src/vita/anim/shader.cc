@@ -10,19 +10,19 @@ constexpr std::ptrdiff_t LONG_STRING_LENGTH = 256;
 constexpr std::ptrdiff_t LOG_LENGTH = 512;
 
 Shader::Shader()
+	: handle(glCreateProgram())
 {
-	mHandle = glCreateProgram();
 }
 
 Shader::Shader(const Source& vertex, const Source& fragment)
+	: handle(glCreateProgram())
 {
-	mHandle = glCreateProgram();
 	Load(vertex, fragment);
 }
 
 Shader::~Shader()
 {
-	glDeleteProgram(mHandle);
+	glDeleteProgram(handle);
 }
 
 Source ReadStringFile(const std::string& path)
@@ -33,7 +33,7 @@ Source ReadStringFile(const std::string& path)
 	return {contents.str()};
 }
 
-unsigned int Shader::CompileVertexShader(const std::string& vertex)
+unsigned int CompileVertexShader(const std::string& vertex)
 {
 	unsigned int v_shader = glCreateShader(GL_VERTEX_SHADER);
 	const char* v_source = vertex.c_str();
@@ -53,7 +53,7 @@ unsigned int Shader::CompileVertexShader(const std::string& vertex)
 	return v_shader;
 }
 
-unsigned int Shader::CompileFragmentShader(const std::string& fragment)
+unsigned int CompileFragmentShader(const std::string& fragment)
 {
 	unsigned int f_shader = glCreateShader(GL_FRAGMENT_SHADER);
 	const char* f_source = fragment.c_str();
@@ -73,17 +73,17 @@ unsigned int Shader::CompileFragmentShader(const std::string& fragment)
 	return f_shader;
 }
 
-bool Shader::LinkShaders(unsigned int vertex, unsigned int fragment)
+bool LinkShaders(Shader* shader, unsigned int vertex, unsigned int fragment)
 {
-	glAttachShader(mHandle, vertex);
-	glAttachShader(mHandle, fragment);
-	glLinkProgram(mHandle);
+	glAttachShader(shader->handle, vertex);
+	glAttachShader(shader->handle, fragment);
+	glLinkProgram(shader->handle);
 	int success = 0;
-	glGetProgramiv(mHandle, GL_LINK_STATUS, &success);
+	glGetProgramiv(shader->handle, GL_LINK_STATUS, &success);
 	if (! success)
 	{
 		char infoLog[LOG_LENGTH];
-		glGetProgramInfoLog(mHandle, LOG_LENGTH, NULL, infoLog);
+		glGetProgramInfoLog(shader->handle, LOG_LENGTH, NULL, infoLog);
 		std::cout << "ERROR: Shader linking failed.\n";
 		std::cout << "\t" << infoLog << "\n";
 		glDeleteShader(vertex);
@@ -97,7 +97,7 @@ bool Shader::LinkShaders(unsigned int vertex, unsigned int fragment)
 	return true;
 }
 
-void Shader::PopulateAttributes()
+std::unordered_map<std::string, unsigned int> PopulateAttributes(Shader* shader)
 {
 	int count = -1;
 	int length;
@@ -105,26 +105,30 @@ void Shader::PopulateAttributes()
 	int size;
 	GLenum type;
 
-	glUseProgram(mHandle);
-	glGetProgramiv(mHandle, GL_ACTIVE_ATTRIBUTES, &count);
+	std::unordered_map<std::string, unsigned int> attributes;
+
+	glUseProgram(shader->handle);
+	glGetProgramiv(shader->handle, GL_ACTIVE_ATTRIBUTES, &count);
 
 	for (int i = 0; i < count; ++i)
 	{
 		std::memset(name, 0, sizeof(char) * STRING_LENGTH);
 		glGetActiveAttrib(
-			mHandle, static_cast<GLuint>(i), STRING_LENGTH, &length, &size, &type, name
+			shader->handle, static_cast<GLuint>(i), STRING_LENGTH, &length, &size, &type, name
 		);
-		const auto attrib = glGetAttribLocation(mHandle, name);
+		const auto attrib = glGetAttribLocation(shader->handle, name);
 		if (attrib >= 0)
 		{
-			mAttributes[name] = static_cast<unsigned int>(attrib);
+			attributes[name] = static_cast<unsigned int>(attrib);
 		}
 	}
 
 	glUseProgram(0);
+
+	return attributes;
 }
 
-void Shader::PopulateUniforms()
+std::unordered_map<std::string, int> PopulateUniforms(Shader* shader)
 {
 	int count = 0;
 	int length;
@@ -132,18 +136,19 @@ void Shader::PopulateUniforms()
 	int size;
 	GLenum type;
 	char testName[LONG_STRING_LENGTH];
+	std::unordered_map<std::string, int> uniforms;
 
-	glUseProgram(mHandle);
-	glGetProgramiv(mHandle, GL_ACTIVE_UNIFORMS, &count);
+	glUseProgram(shader->handle);
+	glGetProgramiv(shader->handle, GL_ACTIVE_UNIFORMS, &count);
 
 	for (int i = 0; i < count; ++i)
 	{
 		std::memset(name, 0, sizeof(char) * STRING_LENGTH);
 		glGetActiveUniform(
-			mHandle, static_cast<GLuint>(i), STRING_LENGTH, &length, &size, &type, name
+			shader->handle, static_cast<GLuint>(i), STRING_LENGTH, &length, &size, &type, name
 		);
 
-		int uniform = glGetUniformLocation(mHandle, name);
+		int uniform = glGetUniformLocation(shader->handle, name);
 		if (uniform >= 0)
 		{
 			std::string uniformName = name;
@@ -159,35 +164,37 @@ void Shader::PopulateUniforms()
 				{
 					std::memset(testName, 0, sizeof(char) * LONG_STRING_LENGTH);
 					sprintf(testName, "%s[%d]", uniformName.c_str(), uniformIndex++);
-					int uniformLocation = glGetUniformLocation(mHandle, testName);
+					int uniformLocation = glGetUniformLocation(shader->handle, testName);
 					if (uniformLocation < 0)
 					{
 						break;
 					}
-					mUniforms[testName] = uniformLocation;
+					uniforms[testName] = uniformLocation;
 				}
 			}
-			mUniforms[uniformName] = uniform;
+			uniforms[uniformName] = uniform;
 		}
 	}
 
 	glUseProgram(0);
+
+	return uniforms;
 }
 
 void Shader::Load(const Source& vertex, const Source& fragment)
 {
 	unsigned int v_shader = CompileVertexShader(vertex.source);
 	unsigned int f_shader = CompileFragmentShader(fragment.source);
-	if (LinkShaders(v_shader, f_shader))
+	if (LinkShaders(this, v_shader, f_shader))
 	{
-		PopulateAttributes();
-		PopulateUniforms();
+		attributes = PopulateAttributes(this);
+		uniforms = PopulateUniforms(this);
 	}
 }
 
 void Shader::Bind()
 {
-	glUseProgram(mHandle);
+	glUseProgram(handle);
 }
 
 void Shader::UnBind()
@@ -195,18 +202,13 @@ void Shader::UnBind()
 	glUseProgram(0);
 }
 
-unsigned int Shader::GetHandle()
-{
-	return mHandle;
-}
-
 unsigned int Shader::GetAttribute(const std::string& name)
 {
-	auto it = mAttributes.find(name);
-	if (it == mAttributes.end())
+	auto it = attributes.find(name);
+	if (it == attributes.end())
 	{
 		std::cout << "Retrieving bad attribute index: " << name << "\n";
-		mAttributes[name] = 0;
+		attributes[name] = 0;
 		return 0;
 	}
 	return it->second;
@@ -214,11 +216,11 @@ unsigned int Shader::GetAttribute(const std::string& name)
 
 int Shader::GetUniform(const std::string& name)
 {
-	auto it = mUniforms.find(name);
-	if (it == mUniforms.end())
+	auto it = uniforms.find(name);
+	if (it == uniforms.end())
 	{
 		std::cout << "Retrieving bad uniform index: " << name << "\n";
-		mUniforms[name] = -1;
+		uniforms[name] = -1;
 		return -1;
 	}
 	return it->second;

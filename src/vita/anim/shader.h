@@ -9,24 +9,15 @@ Source ReadStringFile(const std::string& path);
 
 struct Shader
 {
-	unsigned int mHandle;
-	std::unordered_map<std::string, unsigned int> mAttributes;
-	std::unordered_map<std::string, int> mUniforms;
-
-	unsigned int CompileVertexShader(const std::string& vertex);
-	unsigned int CompileFragmentShader(const std::string& fragment);
-	bool LinkShaders(unsigned int vertex, unsigned int fragment);
-
-	void PopulateAttributes();
-	void PopulateUniforms();
+	unsigned int handle;
+	std::unordered_map<std::string, unsigned int> attributes;
+	std::unordered_map<std::string, int> uniforms;
 
 	Shader(Shader&&) = delete;
 	void operator=(Shader&&) = delete;
 	Shader(const Shader&) = delete;
 	void operator=(const Shader&) = delete;
 	Shader(Shader&) = delete;
-
-   public:
 
 	Shader();
 	Shader(const Source& vertex, const Source& fragment);
@@ -39,5 +30,4 @@ struct Shader
 
 	unsigned int GetAttribute(const std::string& name);
 	int GetUniform(const std::string& name);
-	unsigned int GetHandle();
 };
