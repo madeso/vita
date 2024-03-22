@@ -45,6 +45,9 @@ vec3 operator+(const vec3& l, const vec3& r);
 vec3 operator-(const vec3& l, const vec3& r);
 vec3 operator*(const vec3& v, float f);
 vec3 operator*(const vec3& l, const vec3& r);
+bool operator==(const vec3& l, const vec3& r);
+bool operator!=(const vec3& l, const vec3& r);
+
 float dot(const vec3& l, const vec3& r);
 float lenSq(const vec3& v);
 float len(const vec3& v);
@@ -58,5 +61,3 @@ vec3 cross(const vec3& l, const vec3& r);
 vec3 lerp(const vec3& s, const vec3& e, float t);
 vec3 slerp(const vec3& s, const vec3& e, float t);
 vec3 nlerp(const vec3& s, const vec3& e, float t);
-bool operator==(const vec3& l, const vec3& r);
-bool operator!=(const vec3& l, const vec3& r);
