@@ -51,12 +51,14 @@ quat angleAxis(float angle, const vec3& axis);
 quat fromTo(const vec3& from, const vec3& to);
 vec3 getAxis(const quat& quat);
 float getAngle(const quat& quat);
+
 quat operator+(const quat& a, const quat& b);
 quat operator-(const quat& a, const quat& b);
 quat operator*(const quat& a, float b);
 quat operator-(const quat& q);
 bool operator==(const quat& left, const quat& right);
 bool operator!=(const quat& a, const quat& b);
+
 bool sameOrientation(const quat& left, const quat& right);
 float dot(const quat& a, const quat& b);
 float lenSq(const quat& q);

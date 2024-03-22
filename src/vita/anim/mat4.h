@@ -176,6 +176,7 @@ mat4 operator*(const mat4& m, float f);
 mat4 operator+(const mat4& a, const mat4& b);
 mat4 operator*(const mat4& a, const mat4& b);
 vec4 operator*(const mat4& m, const vec4& v);
+
 vec3 transformVector(const mat4& m, const vec3& v);
 vec3 transformPoint(const mat4& m, const vec3& v);
 vec3 transformPoint(const mat4& m, const vec3& v, float& w);
