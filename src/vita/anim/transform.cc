@@ -3,6 +3,20 @@
 
 #include "vita/anim/transform.h"
 
+Transform::Transform()
+	: position(vec3(0, 0, 0))
+	, rotation(quat(0, 0, 0, 1))
+	, scale(vec3(1, 1, 1))
+{
+}
+
+Transform::Transform(const vec3& p, const quat& r, const vec3& s)
+	: position(p)
+	, rotation(r)
+	, scale(s)
+{
+}
+
 Transform combine(const Transform& a, const Transform& b)
 {
 	Transform out;
@@ -54,7 +68,7 @@ bool operator!=(const Transform& a, const Transform& b)
 	return ! (a == b);
 }
 
-mat4 transformToMat4(const Transform& t)
+mat4 mat4_from_transform(const Transform& t)
 {
 	// First, extract the rotation basis of the transform
 	vec3 x = t.rotation * vec3(1, 0, 0);
@@ -90,7 +104,7 @@ mat4 transformToMat4(const Transform& t)
 	);
 }
 
-Transform mat4ToTransform(const mat4& m)
+Transform transform_from_mat4(const mat4& m)
 {
 	Transform out;
 

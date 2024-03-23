@@ -10,19 +10,8 @@ struct Transform
 	quat rotation;
 	vec3 scale;
 
-	Transform()
-		: position(vec3(0, 0, 0))
-		, rotation(quat(0, 0, 0, 1))
-		, scale(vec3(1, 1, 1))
-	{
-	}
-
-	Transform(const vec3& p, const quat& r, const vec3& s)
-		: position(p)
-		, rotation(r)
-		, scale(s)
-	{
-	}
+	Transform();
+	Transform(const vec3& p, const quat& r, const vec3& s);
 };
 
 bool operator==(const Transform& a, const Transform& b);
@@ -31,7 +20,9 @@ bool operator!=(const Transform& a, const Transform& b);
 Transform combine(const Transform& a, const Transform& b);
 Transform inverse(const Transform& t);
 Transform mix(const Transform& a, const Transform& b, float t);
-mat4 transformToMat4(const Transform& t);
-Transform mat4ToTransform(const mat4& m);
+
 vec3 transform_point(const Transform& a, const vec3& b);
 vec3 transform_vector(const Transform& a, const vec3& b);
+
+mat4 mat4_from_transform(const Transform& t);
+Transform transform_from_mat4(const mat4& m);
