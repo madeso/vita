@@ -10,33 +10,13 @@ struct vec3
 	float y;
 	float z;
 
-	const float* data_ptr() const
-	{
-		return &x;
-	}
+	const float* data_ptr() const;
 
 	// float v[3];
 
-	vec3()
-		: x(0.0f)
-		, y(0.0f)
-		, z(0.0f)
-	{
-	}
-
-	vec3(float ax, float ay, float az)
-		: x(ax)
-		, y(ay)
-		, z(az)
-	{
-	}
-
-	vec3(float* fv)
-		: x(fv[0])
-		, y(fv[1])
-		, z(fv[2])
-	{
-	}
+	vec3();
+	vec3(float ax, float ay, float az);
+	vec3(float* fv);
 };
 
 #pragma pack(pop)

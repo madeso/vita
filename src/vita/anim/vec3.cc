@@ -3,6 +3,32 @@
 
 #include "vita/anim/vec3.h"
 
+const float* vec3::data_ptr() const
+{
+	return &x;
+}
+
+vec3::vec3()
+	: x(0.0f)
+	, y(0.0f)
+	, z(0.0f)
+{
+}
+
+vec3::vec3(float ax, float ay, float az)
+	: x(ax)
+	, y(ay)
+	, z(az)
+{
+}
+
+vec3::vec3(float* fv)
+	: x(fv[0])
+	, y(fv[1])
+	, z(fv[2])
+{
+}
+
 vec3 operator+(const vec3& l, const vec3& r)
 {
 	return vec3(l.x + r.x, l.y + r.y, l.z + r.z);
