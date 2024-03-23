@@ -18,10 +18,7 @@ struct mat4
 	vec4 forward() const;
 	vec4 position() const;
 
-	const float* data_ptr() const
-	{
-		return &xx;
-	}
+	const float* data_ptr() const;
 
 	// row 1     row 2     row 3     row 4
 	/* column 1 */
@@ -90,45 +87,9 @@ struct mat4
 
 	// Include constructors here
 
-	mat4()
-		: xx(1)
-		, xy(0)
-		, xz(0)
-		, xw(0)
-		, yx(0)
-		, yy(1)
-		, yz(0)
-		, yw(0)
-		, zx(0)
-		, zy(0)
-		, zz(1)
-		, zw(0)
-		, tx(0)
-		, ty(0)
-		, tz(0)
-		, tw(1)
-	{
-	}
+	mat4();
 
-	mat4(float* fv)
-		: xx(fv[0])
-		, xy(fv[1])
-		, xz(fv[2])
-		, xw(fv[3])
-		, yx(fv[4])
-		, yy(fv[5])
-		, yz(fv[6])
-		, yw(fv[7])
-		, zx(fv[8])
-		, zy(fv[9])
-		, zz(fv[10])
-		, zw(fv[11])
-		, tx(fv[12])
-		, ty(fv[13])
-		, tz(fv[14])
-		, tw(fv[15])
-	{
-	}
+	explicit mat4(float* fv);
 
 	mat4(
 		float _00,
@@ -147,25 +108,7 @@ struct mat4
 		float _31,
 		float _32,
 		float _33
-	)
-		: xx(_00)
-		, xy(_01)
-		, xz(_02)
-		, xw(_03)
-		, yx(_10)
-		, yy(_11)
-		, yz(_12)
-		, yw(_13)
-		, zx(_20)
-		, zy(_21)
-		, zz(_22)
-		, zw(_23)
-		, tx(_30)
-		, ty(_31)
-		, tz(_32)
-		, tw(_33)
-	{
-	}
+	);
 };
 
 static_assert(sizeof(mat4) == sizeof(float) * 16, "Invalid size");
