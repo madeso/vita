@@ -326,14 +326,14 @@ mat4 mat4_from_ortho(float l, float r, float b, float t, float n, float f)
 mat4 mat4_from_look_at(const vec3& position, const vec3& target, const vec3& up)
 {
 	// Remember, forward is negative z
-	vec3 f = normalized(target - position) * -1.0f;
+	vec3 f = get_normalized(target - position) * -1.0f;
 	vec3 r = cross(up, f);	// Right handed
 	if (r == vec3(0, 0, 0))
 	{
 		return mat4();	// Error
 	}
 	normalize(r);
-	vec3 u = normalized(cross(f, r));  // Right handed
+	vec3 u = get_normalized(cross(f, r));  // Right handed
 
 	vec3 t = vec3(-dot(r, position), -dot(u, position), -dot(f, position));
 

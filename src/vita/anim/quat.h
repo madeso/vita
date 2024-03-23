@@ -13,44 +13,21 @@ struct quat
 	float y;
 	float z;
 	float w;
+	// float v[4];
 
-	const float* data_ptr() const
-	{
-		return &x;
-	}
+	quat();
+	quat(float _x, float _y, float _z, float _w);
 
-	// struct
-	// {
+	const float* data_ptr() const;
+
 	vec3 vector() const;
 	float scalar() const;
 
-	// };
-
-	// float v[4];
-
-	quat()
-		: x(0)
-		, y(0)
-		, z(0)
-		, w(1)
-	{
-	}
-
-	quat(float _x, float _y, float _z, float _w)
-		: x(_x)
-		, y(_y)
-		, z(_z)
-		, w(_w)
-	{
-	}
+	vec3 get_axis() const;
+	float get_angle() const;
 };
 
 #pragma pack(pop)
-
-quat angleAxis(float angle, const vec3& axis);
-quat fromTo(const vec3& from, const vec3& to);
-vec3 getAxis(const quat& quat);
-float getAngle(const quat& quat);
 
 quat operator+(const quat& a, const quat& b);
 quat operator-(const quat& a, const quat& b);
@@ -58,22 +35,28 @@ quat operator*(const quat& a, float b);
 quat operator-(const quat& q);
 bool operator==(const quat& left, const quat& right);
 bool operator!=(const quat& a, const quat& b);
-
-bool sameOrientation(const quat& left, const quat& right);
-float dot(const quat& a, const quat& b);
-float lenSq(const quat& q);
-float len(const quat& q);
-void normalize(quat& q);
-quat normalized(const quat& q);
-quat conjugate(const quat& q);
-quat inverse(const quat& q);
 quat operator*(const quat& Q1, const quat& Q2);
 quat operator*(const quat& Q1, const quat& Q2);
 vec3 operator*(const quat& q, const vec3& v);
+quat operator^(const quat& q, float f);
+
+bool is_same_orientation(const quat& left, const quat& right);
+float dot(const quat& a, const quat& b);
+float get_length_sq(const quat& q);
+float get_length(const quat& q);
+void normalize(quat& q);
+quat get_normalized(const quat& q);
+quat conjugate(const quat& q);
+quat inverse(const quat& q);
 quat mix(const quat& from, const quat& to, float t);
 quat nlerp(const quat& from, const quat& to, float t);
-quat operator^(const quat& q, float f);
 quat slerp(const quat& start, const quat& end, float t);
-quat lookRotation(const vec3& direcion, const vec3& up);
-mat4 quatToMat4(const quat& q);
-quat mat4ToQuat(const mat4& m);
+
+quat quat_from_look_rotation(const vec3& direcion, const vec3& up);
+quat quat_from_mat4(const mat4& m);
+quat quat_from_angle_axis(float angle, const vec3& axis);
+
+/// returns a quat as a vector from was rotated to to (ignoring length)
+quat quat_from_rotation(const vec3& from, const vec3& to);
+
+mat4 mat4_from_quat(const quat& q);

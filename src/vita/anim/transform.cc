@@ -95,10 +95,10 @@ Transform mat4ToTransform(const mat4& m)
 	Transform out;
 
 	out.position = vec3(m[12], m[13], m[14]);
-	out.rotation = mat4ToQuat(m);
+	out.rotation = quat_from_mat4(m);
 
 	mat4 rotScaleMat(m[0], m[1], m[2], 0, m[4], m[5], m[6], 0, m[8], m[9], m[10], 0, 0, 0, 0, 1);
-	mat4 invRotMat = quatToMat4(inverse(out.rotation));
+	mat4 invRotMat = mat4_from_quat(inverse(out.rotation));
 	mat4 scaleSkewMat = rotScaleMat * invRotMat;
 
 	out.scale = vec3(scaleSkewMat[0], scaleSkewMat[5], scaleSkewMat[10]);
