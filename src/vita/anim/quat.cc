@@ -45,16 +45,16 @@ float quat::get_angle() const
 
 quat quat_from_angle_axis(float angle, const vec3& axis)
 {
-	vec3 norm = get_normalized(axis);
-	float s = sinf(angle * 0.5f);
+	const auto norm = get_normalized(axis);
+	const auto s = sinf(angle * 0.5f);
 
 	return quat(norm.x * s, norm.y * s, norm.z * s, cosf(angle * 0.5f));
 }
 
 quat quat_from_rotation(const vec3& from, const vec3& to)
 {
-	vec3 f = get_normalized(from);
-	vec3 t = get_normalized(to);
+	const auto f = get_normalized(from);
+	const auto t = get_normalized(to);
 
 	if (f == t)
 	{
@@ -72,13 +72,12 @@ quat quat_from_rotation(const vec3& from, const vec3& to)
 			ortho = vec3(0, 0, 1);
 		}
 
-		vec3 axis = get_normalized(cross(f, ortho));
+		const auto axis = get_normalized(cross(f, ortho));
 		return quat(axis.x, axis.y, axis.z, 0);
 	}
 
-	vec3 half = get_normalized(f + t);
-	vec3 axis = cross(f, half);
-
+	const auto half = get_normalized(f + t);
+	const auto axis = cross(f, half);
 	return quat(axis.x, axis.y, axis.z, dot(f, half));
 }
 
@@ -135,7 +134,7 @@ float get_length_sq(const quat& q)
 
 float get_length(const quat& q)
 {
-	float lenSq = q.x * q.x + q.y * q.y + q.z * q.z + q.w * q.w;
+	const auto lenSq = q.x * q.x + q.y * q.y + q.z * q.z + q.w * q.w;
 	if (lenSq < QUAT_EPSILON)
 	{
 		return 0.0f;
@@ -145,12 +144,12 @@ float get_length(const quat& q)
 
 void normalize(quat& q)
 {
-	float lenSq = q.x * q.x + q.y * q.y + q.z * q.z + q.w * q.w;
+	const auto lenSq = q.x * q.x + q.y * q.y + q.z * q.z + q.w * q.w;
 	if (lenSq < QUAT_EPSILON)
 	{
 		return;
 	}
-	float i_len = 1.0f / sqrtf(lenSq);
+	const auto i_len = 1.0f / sqrtf(lenSq);
 
 	q.x *= i_len;
 	q.y *= i_len;
@@ -160,12 +159,12 @@ void normalize(quat& q)
 
 quat get_normalized(const quat& q)
 {
-	float lenSq = q.x * q.x + q.y * q.y + q.z * q.z + q.w * q.w;
+	const auto lenSq = q.x * q.x + q.y * q.y + q.z * q.z + q.w * q.w;
 	if (lenSq < QUAT_EPSILON)
 	{
 		return quat();
 	}
-	float i_len = 1.0f / sqrtf(lenSq);
+	const auto i_len = 1.0f / sqrtf(lenSq);
 
 	return quat(q.x * i_len, q.y * i_len, q.z * i_len, q.w * i_len);
 }
@@ -177,7 +176,7 @@ quat conjugate(const quat& q)
 
 quat inverse(const quat& q)
 {
-	float lenSq = q.x * q.x + q.y * q.y + q.z * q.z + q.w * q.w;
+	const auto lenSq = q.x * q.x + q.y * q.y + q.z * q.z + q.w * q.w;
 	if (lenSq < QUAT_EPSILON)
 	{
 		return quat();
@@ -217,11 +216,11 @@ quat nlerp(const quat& from, const quat& to, float t)
 
 quat operator^(const quat& q, float f)
 {
-	float angle = 2.0f * acosf(q.scalar());
-	vec3 axis = get_normalized(q.vector());
+	const auto angle = 2.0f * acosf(q.scalar());
+	const auto axis = get_normalized(q.vector());
 
-	float halfCos = cosf(f * angle * 0.5f);
-	float halfSin = sinf(f * angle * 0.5f);
+	const auto halfCos = cosf(f * angle * 0.5f);
+	const auto halfSin = sinf(f * angle * 0.5f);
 
 	return quat(axis.x * halfSin, axis.y * halfSin, axis.z * halfSin, halfCos);
 }
@@ -239,30 +238,30 @@ quat slerp(const quat& start, const quat& end, float t)
 quat quat_from_look_rotation(const vec3& direcion, const vec3& up)
 {
 	// Find orthonormal basis vectors
-	vec3 f = get_normalized(direcion);
+	const auto f = get_normalized(direcion);
 	vec3 u = get_normalized(up);
-	vec3 r = cross(u, f);
+	const auto r = cross(u, f);
 	u = cross(f, r);
 
 	// From world forward to object forward
-	quat f2d = quat_from_rotation(vec3(0, 0, 1), f);
+	const auto f2d = quat_from_rotation(vec3(0, 0, 1), f);
 
 	// what direction is the new object up?
-	vec3 objectUp = f2d * vec3(0, 1, 0);
+	const auto objectUp = f2d * vec3(0, 1, 0);
 	// From object up to desired up
-	quat u2u = quat_from_rotation(objectUp, u);
+	const auto u2u = quat_from_rotation(objectUp, u);
 
 	// Rotate to forward direction first, then twist to correct up
-	quat result = f2d * u2u;
+	const auto result = f2d * u2u;
 	// Don't forget to normalize the result
 	return get_normalized(result);
 }
 
 mat4 mat4_from_quat(const quat& q)
 {
-	vec3 r = q * vec3(1, 0, 0);
-	vec3 u = q * vec3(0, 1, 0);
-	vec3 f = q * vec3(0, 0, 1);
+	const auto r = q * vec3(1, 0, 0);
+	const auto u = q * vec3(0, 1, 0);
+	const auto f = q * vec3(0, 0, 1);
 
 	return mat4(r.x, r.y, r.z, 0, u.x, u.y, u.z, 0, f.x, f.y, f.z, 0, 0, 0, 0, 1);
 }
@@ -270,8 +269,8 @@ mat4 mat4_from_quat(const quat& q)
 quat quat_from_mat4(const mat4& m)
 {
 	vec3 up = get_normalized(vec3(m.up().x, m.up().y, m.up().z));
-	vec3 forward = get_normalized(vec3(m.forward().x, m.forward().y, m.forward().z));
-	vec3 right = cross(up, forward);
+	const auto forward = get_normalized(vec3(m.forward().x, m.forward().y, m.forward().z));
+	const auto right = cross(up, forward);
 	up = cross(forward, right);
 
 	return quat_from_look_rotation(forward, up);

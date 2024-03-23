@@ -35,10 +35,11 @@ ShaderSource read_shader_file(const std::string& path)
 
 unsigned int CompileVertexShader(const std::string& vertex)
 {
-	unsigned int v_shader = glCreateShader(GL_VERTEX_SHADER);
-	const char* v_source = vertex.c_str();
+	const auto v_shader = glCreateShader(GL_VERTEX_SHADER);
+	const auto v_source = vertex.c_str();
 	glShaderSource(v_shader, 1, &v_source, NULL);
 	glCompileShader(v_shader);
+
 	int success = 0;
 	glGetShaderiv(v_shader, GL_COMPILE_STATUS, &success);
 	if (! success)
@@ -50,15 +51,17 @@ unsigned int CompileVertexShader(const std::string& vertex)
 		glDeleteShader(v_shader);
 		return 0;
 	};
+
 	return v_shader;
 }
 
 unsigned int CompileFragmentShader(const std::string& fragment)
 {
-	unsigned int f_shader = glCreateShader(GL_FRAGMENT_SHADER);
-	const char* f_source = fragment.c_str();
+	const auto f_shader = glCreateShader(GL_FRAGMENT_SHADER);
+	const auto f_source = fragment.c_str();
 	glShaderSource(f_shader, 1, &f_source, NULL);
 	glCompileShader(f_shader);
+
 	int success = 0;
 	glGetShaderiv(f_shader, GL_COMPILE_STATUS, &success);
 	if (! success)
@@ -78,6 +81,7 @@ bool LinkShaders(Shader* shader, unsigned int vertex, unsigned int fragment)
 	glAttachShader(shader->handle, vertex);
 	glAttachShader(shader->handle, fragment);
 	glLinkProgram(shader->handle);
+
 	int success = 0;
 	glGetProgramiv(shader->handle, GL_LINK_STATUS, &success);
 	if (! success)
@@ -183,8 +187,8 @@ std::unordered_map<std::string, int> PopulateUniforms(Shader* shader)
 
 void Shader::Load(const ShaderSource& vertex, const ShaderSource& fragment)
 {
-	unsigned int v_shader = CompileVertexShader(vertex.source);
-	unsigned int f_shader = CompileFragmentShader(fragment.source);
+	const auto v_shader = CompileVertexShader(vertex.source);
+	const auto f_shader = CompileFragmentShader(fragment.source);
 	if (LinkShaders(this, v_shader, f_shader))
 	{
 		attributes = PopulateAttributes(this);
@@ -204,7 +208,7 @@ void Shader::unbind()
 
 unsigned int Shader::get_attribute(const std::string& name)
 {
-	auto it = attributes.find(name);
+	const auto it = attributes.find(name);
 	if (it == attributes.end())
 	{
 		std::cout << "Retrieving bad attribute index: " << name << "\n";
@@ -216,7 +220,7 @@ unsigned int Shader::get_attribute(const std::string& name)
 
 int Shader::get_uniform(const std::string& name)
 {
-	auto it = uniforms.find(name);
+	const auto it = uniforms.find(name);
 	if (it == uniforms.end())
 	{
 		std::cout << "Retrieving bad uniform index: " << name << "\n";

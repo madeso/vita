@@ -37,7 +37,7 @@ void LoadFromFile(Texture* out, const TextureFromFile& path)
 	glBindTexture(GL_TEXTURE_2D, out->handle);
 
 	int width, height, channels;
-	unsigned char* data = stbi_load(path.path.c_str(), &width, &height, &channels, 4);
+	auto data = stbi_load(path.path.c_str(), &width, &height, &channels, 4);
 
 	CompleteLoad(out, path.path, width, height, channels, data);
 }
@@ -48,7 +48,7 @@ void LoadFromMemory(Texture* out, const TextureData& tex)
 
 	int width, height, channels;
 
-	auto* data = stbi_load_from_memory(
+	auto data = stbi_load_from_memory(
 		static_cast<const stbi_uc*>(tex.buffer), tex.length, &width, &height, &channels, 4
 	);
 	CompleteLoad(out, tex.name, width, height, channels, data);

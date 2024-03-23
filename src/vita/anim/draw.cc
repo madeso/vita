@@ -4,37 +4,17 @@
 
 static GLenum C(DrawMode input)
 {
-	if (input == DrawMode::Points)
+	switch (input)
 	{
-		return GL_POINTS;
+	case DrawMode::Points: return GL_POINTS;
+	case DrawMode::LineStrip: return GL_LINE_STRIP;
+	case DrawMode::LineLoop: return GL_LINE_LOOP;
+	case DrawMode::Lines: return GL_LINES;
+	case DrawMode::Triangles: return GL_TRIANGLES;
+	case DrawMode::TriangleStrip: return GL_TRIANGLE_STRIP;
+	case DrawMode::TriangleFan: return GL_TRIANGLE_FAN;
+	default: std::cout << "C unreachable code hit\n"; return 0;
 	}
-	else if (input == DrawMode::LineStrip)
-	{
-		return GL_LINE_STRIP;
-	}
-	else if (input == DrawMode::LineLoop)
-	{
-		return GL_LINE_LOOP;
-	}
-	else if (input == DrawMode::Lines)
-	{
-		return GL_LINES;
-	}
-	else if (input == DrawMode::Triangles)
-	{
-		return GL_TRIANGLES;
-	}
-	else if (input == DrawMode::TriangleStrip)
-	{
-		return GL_TRIANGLE_STRIP;
-	}
-	else if (input == DrawMode::TriangleFan)
-	{
-		return GL_TRIANGLE_FAN;
-	}
-
-	std::cout << "C unreachable code hit\n";
-	return 0;
 }
 
 void draw(unsigned int vertexCount, DrawMode mode)

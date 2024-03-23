@@ -15,7 +15,7 @@ IndexBuffer::~IndexBuffer()
 void IndexBuffer::set_array(const unsigned int* inputArray, unsigned int arrayLength)
 {
 	count = arrayLength;
-	unsigned int size = sizeof(unsigned int);
+	const auto size = sizeof(unsigned int);
 
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, handle);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, size * count, inputArray, GL_STATIC_DRAW);

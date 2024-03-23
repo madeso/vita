@@ -40,7 +40,7 @@ Transform inverse(const Transform& t)
 	inv.scale.y = std::abs(t.scale.y) < VEC3_EPSILON ? 0.0f : 1.0f / t.scale.y;
 	inv.scale.z = std::abs(t.scale.z) < VEC3_EPSILON ? 0.0f : 1.0f / t.scale.z;
 
-	vec3 invTranslation = t.position * -1.0f;
+	const auto invTranslation = t.position * -1.0f;
 	inv.position = inv.rotation * (inv.scale * invTranslation);
 
 	return inv;
@@ -81,7 +81,7 @@ mat4 mat4_from_transform(const Transform& t)
 	z = z * t.scale.z;
 
 	// Extract the position of the transform
-	vec3 p = t.position;
+	const auto p = t.position;
 
 	// Create matrix
 	return mat4(
@@ -122,9 +122,7 @@ Transform transform_from_mat4(const mat4& m)
 
 vec3 transform_point(const Transform& a, const vec3& b)
 {
-	vec3 out;
-
-	out = a.rotation * (a.scale * b);
+	vec3 out = a.rotation * (a.scale * b);
 	out = a.position + out;
 
 	return out;
@@ -132,9 +130,5 @@ vec3 transform_point(const Transform& a, const vec3& b)
 
 vec3 transform_vector(const Transform& a, const vec3& b)
 {
-	vec3 out;
-
-	out = a.rotation * (a.scale * b);
-
-	return out;
+	return a.rotation * (a.scale * b);
 }

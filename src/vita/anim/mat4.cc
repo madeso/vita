@@ -236,7 +236,7 @@ mat4 adjugate(const mat4& m)
 
 mat4 inverse(const mat4& m)
 {
-	float det = determinant(m);
+	const auto det = determinant(m);
 
 	if (det == 0.0f)
 	{  // Epsilon check would need to be REALLY small
@@ -250,11 +250,11 @@ mat4 inverse(const mat4& m)
 
 void invert(mat4& m)
 {
-	float det = determinant(m);
+	const auto det = determinant(m);
 
 	if (det == 0.0f)
 	{
-		std::cout << "WARNING: Trying to invert a matrix with a zero determinant\n";
+		std::cout << "WARNING: Trying to inverse a matrix with a zero determinant\n";
 		m = mat4();
 		return;
 	}
@@ -291,8 +291,8 @@ mat4 mat4_from_frustum(float l, float r, float b, float t, float n, float f)
 
 mat4 mat4_from_perspective(float fov, float aspect, float znear, float zfar)
 {
-	float ymax = znear * tanf(fov * 3.14159265359f / 360.0f);
-	float xmax = ymax * aspect;
+	const auto ymax = znear * tanf(fov * 3.14159265359f / 360.0f);
+	const auto xmax = ymax * aspect;
 
 	return mat4_from_frustum(-xmax, xmax, -ymax, ymax, znear, zfar);
 }
@@ -326,16 +326,16 @@ mat4 mat4_from_ortho(float l, float r, float b, float t, float n, float f)
 mat4 mat4_from_look_at(const vec3& position, const vec3& target, const vec3& up)
 {
 	// Remember, forward is negative z
-	vec3 f = get_normalized(target - position) * -1.0f;
+	const auto f = get_normalized(target - position) * -1.0f;
 	vec3 r = cross(up, f);	// Right handed
 	if (r == vec3(0, 0, 0))
 	{
 		return mat4();	// Error
 	}
 	normalize(r);
-	vec3 u = get_normalized(cross(f, r));  // Right handed
+	const auto u = get_normalized(cross(f, r));	 // Right handed
 
-	vec3 t = vec3(-dot(r, position), -dot(u, position), -dot(f, position));
+	const auto t = vec3(-dot(r, position), -dot(u, position), -dot(f, position));
 
 	return mat4(
 		// Transpose upper 3x3 matrix to invert it
