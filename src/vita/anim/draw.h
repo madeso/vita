@@ -2,7 +2,7 @@
 
 #include "vita/anim/indexbuffer.h"
 
-enum struct DrawMode
+enum class DrawMode
 {
 	Points,
 	LineStrip,
@@ -13,8 +13,8 @@ enum struct DrawMode
 	TriangleFan
 };
 
-void Draw(IndexBuffer& inIndexBuffer, DrawMode mode);
-void Draw(unsigned int vertexCount, DrawMode mode);
+void draw(IndexBuffer& inIndexBuffer, DrawMode mode);
+void draw(unsigned int vertexCount, DrawMode mode);
 
-void DrawInstanced(IndexBuffer& inIndexBuffer, DrawMode mode, unsigned int instanceCount);
-void DrawInstanced(unsigned int vertexCount, DrawMode mode, unsigned int numInstances);
+void draw_instanced(IndexBuffer& inIndexBuffer, DrawMode mode, unsigned int instanceCount);
+void draw_instanced(unsigned int vertexCount, DrawMode mode, unsigned int numInstances);

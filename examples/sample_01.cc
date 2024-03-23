@@ -103,7 +103,7 @@ void Sample::on_render(float inAspectRatio)
 
 	mDisplayTexture->bind(mShader->GetUniform("tex0"), 0);
 
-	Draw(*mIndexBuffer, DrawMode::Triangles);
+	draw(*mIndexBuffer, DrawMode::Triangles);
 
 	mDisplayTexture->unbind(0);
 

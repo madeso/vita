@@ -2,7 +2,7 @@
 
 #include <iostream>
 
-static GLenum DrawModeToGLEnum(DrawMode input)
+static GLenum C(DrawMode input)
 {
 	if (input == DrawMode::Points)
 	{
@@ -33,32 +33,30 @@ static GLenum DrawModeToGLEnum(DrawMode input)
 		return GL_TRIANGLE_FAN;
 	}
 
-	std::cout << "DrawModeToGLEnum unreachable code hit\n";
+	std::cout << "C unreachable code hit\n";
 	return 0;
 }
 
-void Draw(unsigned int vertexCount, DrawMode mode)
+void draw(unsigned int vertexCount, DrawMode mode)
 {
-	glDrawArrays(DrawModeToGLEnum(mode), 0, vertexCount);
+	glDrawArrays(C(mode), 0, vertexCount);
 }
 
-void DrawInstanced(unsigned int vertexCount, DrawMode mode, unsigned int numInstances)
+void draw_instanced(unsigned int vertexCount, DrawMode mode, unsigned int numInstances)
 {
-	glDrawArraysInstanced(DrawModeToGLEnum(mode), 0, vertexCount, numInstances);
+	glDrawArraysInstanced(C(mode), 0, vertexCount, numInstances);
 }
 
-void Draw(IndexBuffer& inIndexBuffer, DrawMode mode)
+void draw(IndexBuffer& inIndexBuffer, DrawMode mode)
 {
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, inIndexBuffer.handle);
-	glDrawElements(DrawModeToGLEnum(mode), inIndexBuffer.count, GL_UNSIGNED_INT, 0);
+	glDrawElements(C(mode), inIndexBuffer.count, GL_UNSIGNED_INT, 0);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 }
 
-void DrawInstanced(IndexBuffer& inIndexBuffer, DrawMode mode, unsigned int instanceCount)
+void draw_instanced(IndexBuffer& inIndexBuffer, DrawMode mode, unsigned int instanceCount)
 {
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, inIndexBuffer.handle);
-	glDrawElementsInstanced(
-		DrawModeToGLEnum(mode), inIndexBuffer.count, GL_UNSIGNED_INT, 0, instanceCount
-	);
+	glDrawElementsInstanced(C(mode), inIndexBuffer.count, GL_UNSIGNED_INT, 0, instanceCount);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 }
