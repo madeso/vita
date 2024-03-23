@@ -17,12 +17,12 @@ struct Transform
 bool operator==(const Transform& a, const Transform& b);
 bool operator!=(const Transform& a, const Transform& b);
 
-Transform combine(const Transform& a, const Transform& b);
-Transform inverse(const Transform& t);
-Transform mix(const Transform& a, const Transform& b, float t);
+Transform get_combined(const Transform& a, const Transform& b);
+Transform get_inverse(const Transform& t);
+Transform get_mixed(const Transform& a, const Transform& b, float t);
 
-vec3 transform_point(const Transform& a, const vec3& b);
-vec3 transform_vector(const Transform& a, const vec3& b);
+vec3 get_transformed_point(const Transform& a, const vec3& b);
+vec3 get_transformed_vector(const Transform& a, const vec3& b);
 
 mat4 mat4_from_transform(const Transform& t);
 Transform transform_from_mat4(const mat4& m);

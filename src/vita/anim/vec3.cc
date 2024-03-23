@@ -95,7 +95,7 @@ vec3 get_normalized(const vec3& v)
 	return vec3(v.x * length_inv, v.y * length_inv, v.z * length_inv);
 }
 
-float angle_between(const vec3& l, const vec3& r)
+float get_angle_between(const vec3& l, const vec3& r)
 {
 	float sqMagL = get_length_sq(l);
 	float sqMagR = get_length_sq(r);
@@ -109,7 +109,7 @@ float angle_between(const vec3& l, const vec3& r)
 	return acosf(dot(l, r) / len);
 }
 
-vec3 project(const vec3& a, const vec3& b)
+vec3 get_projected(const vec3& a, const vec3& b)
 {
 	const auto magBSq = get_length_sq(b);
 	if (magBSq < VEC3_EPSILON)
@@ -121,13 +121,13 @@ vec3 project(const vec3& a, const vec3& b)
 	return b * scale;
 }
 
-vec3 reject(const vec3& a, const vec3& b)
+vec3 get_rejected(const vec3& a, const vec3& b)
 {
-	const auto projection = project(a, b);
+	const auto projection = get_projected(a, b);
 	return a - projection;
 }
 
-vec3 reflect(const vec3& a, const vec3& b)
+vec3 get_reflected(const vec3& a, const vec3& b)
 {
 	const auto magBSq = get_length_sq(b);
 	if (magBSq < VEC3_EPSILON)
@@ -155,7 +155,7 @@ vec3 slerp(const vec3& s, const vec3& e, float t)
 	const auto from = get_normalized(s);
 	const auto to = get_normalized(e);
 
-	const auto theta = angle_between(from, to);
+	const auto theta = get_angle_between(from, to);
 	const auto sin_theta = sinf(theta);
 
 	const auto a = sinf((1.0f - t) * theta) / sin_theta;

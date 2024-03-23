@@ -22,7 +22,7 @@ TEST_CASE("basic mat4 test")
 		10,
 		1
 	);
-	mat4 inv = inverse(test);
+	mat4 inv = get_inverse(test);
 
 	mat4 identity = test * inv;
 

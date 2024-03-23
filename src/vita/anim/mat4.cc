@@ -133,21 +133,21 @@ vec4 operator*(const mat4& m, const vec4& v)
 	);
 }
 
-vec3 transform_vector(const mat4& m, const vec3& v)
+vec3 get_transformed_vector(const mat4& m, const vec3& v)
 {
 	return vec3(
 		M4V4D(0, v.x, v.y, v.z, 0.0f), M4V4D(1, v.x, v.y, v.z, 0.0f), M4V4D(2, v.x, v.y, v.z, 0.0f)
 	);
 }
 
-vec3 transform_point(const mat4& m, const vec3& v)
+vec3 get_transformed_point(const mat4& m, const vec3& v)
 {
 	return vec3(
 		M4V4D(0, v.x, v.y, v.z, 1.0f), M4V4D(1, v.x, v.y, v.z, 1.0f), M4V4D(2, v.x, v.y, v.z, 1.0f)
 	);
 }
 
-vec3 transform_point(const mat4& m, const vec3& v, float& w)
+vec3 get_transformed_point(const mat4& m, const vec3& v, float& w)
 {
 	float _w = w;
 	w = M4V4D(3, v.x, v.y, v.z, _w);
@@ -173,7 +173,7 @@ void transpose(mat4& m)
 	M4SWAP(m.tz, m.zw);
 }
 
-mat4 transposed(const mat4& m)
+mat4 get_transposed(const mat4& m)
 {
 	return mat4(
 		m.xx,
@@ -200,13 +200,13 @@ mat4 transposed(const mat4& m)
 	 - m[c1 * 4 + r0] * (m[c0 * 4 + r1] * m[c2 * 4 + r2] - m[c0 * 4 + r2] * m[c2 * 4 + r1]) \
 	 + m[c2 * 4 + r0] * (m[c0 * 4 + r1] * m[c1 * 4 + r2] - m[c0 * 4 + r2] * m[c1 * 4 + r1]))
 
-float determinant(const mat4& m)
+float get_determinant(const mat4& m)
 {
 	return m[0] * M4_3X3MINOR(1, 2, 3, 1, 2, 3) - m[4] * M4_3X3MINOR(0, 2, 3, 1, 2, 3)
 		 + m[8] * M4_3X3MINOR(0, 1, 3, 1, 2, 3) - m[12] * M4_3X3MINOR(0, 1, 2, 1, 2, 3);
 }
 
-mat4 adjugate(const mat4& m)
+mat4 get_adjugate(const mat4& m)
 {
 	// Cofactor(M[i, j]) = Minor(M[i, j]] * pow(-1, i + j)
 	mat4 cofactor;
@@ -231,26 +231,26 @@ mat4 adjugate(const mat4& m)
 	cofactor[14] = -M4_3X3MINOR(0, 1, 2, 0, 1, 3);
 	cofactor[15] = M4_3X3MINOR(0, 1, 2, 0, 1, 2);
 
-	return transposed(cofactor);
+	return get_transposed(cofactor);
 }
 
-mat4 inverse(const mat4& m)
+mat4 get_inverse(const mat4& m)
 {
-	const auto det = determinant(m);
+	const auto det = get_determinant(m);
 
 	if (det == 0.0f)
 	{  // Epsilon check would need to be REALLY small
 		std::cout << "WARNING: Trying to invert a matrix with a zero determinant\n";
 		return mat4();
 	}
-	mat4 adj = adjugate(m);
+	mat4 adj = get_adjugate(m);
 
 	return adj * (1.0f / det);
 }
 
 void invert(mat4& m)
 {
-	const auto det = determinant(m);
+	const auto det = get_determinant(m);
 
 	if (det == 0.0f)
 	{
@@ -259,7 +259,7 @@ void invert(mat4& m)
 		return;
 	}
 
-	m = adjugate(m) * (1.0f / det);
+	m = get_adjugate(m) * (1.0f / det);
 }
 
 mat4 mat4_from_frustum(float l, float r, float b, float t, float n, float f)

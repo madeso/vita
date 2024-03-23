@@ -17,7 +17,7 @@ Transform::Transform(const vec3& p, const quat& r, const vec3& s)
 {
 }
 
-Transform combine(const Transform& a, const Transform& b)
+Transform get_combined(const Transform& a, const Transform& b)
 {
 	Transform out;
 
@@ -30,11 +30,11 @@ Transform combine(const Transform& a, const Transform& b)
 	return out;
 }
 
-Transform inverse(const Transform& t)
+Transform get_inverse(const Transform& t)
 {
 	Transform inv;
 
-	inv.rotation = inverse(t.rotation);
+	inv.rotation = get_inverse(t.rotation);
 
 	inv.scale.x = std::abs(t.scale.x) < VEC3_EPSILON ? 0.0f : 1.0f / t.scale.x;
 	inv.scale.y = std::abs(t.scale.y) < VEC3_EPSILON ? 0.0f : 1.0f / t.scale.y;
@@ -46,7 +46,7 @@ Transform inverse(const Transform& t)
 	return inv;
 }
 
-Transform mix(const Transform& a, const Transform& b, float t)
+Transform get_mixed(const Transform& a, const Transform& b, float t)
 {
 	quat bRot = b.rotation;
 	if (dot(a.rotation, bRot) < 0.0f)
@@ -112,7 +112,7 @@ Transform transform_from_mat4(const mat4& m)
 	out.rotation = quat_from_mat4(m);
 
 	mat4 rotScaleMat(m[0], m[1], m[2], 0, m[4], m[5], m[6], 0, m[8], m[9], m[10], 0, 0, 0, 0, 1);
-	mat4 invRotMat = mat4_from_quat(inverse(out.rotation));
+	mat4 invRotMat = mat4_from_quat(get_inverse(out.rotation));
 	mat4 scaleSkewMat = rotScaleMat * invRotMat;
 
 	out.scale = vec3(scaleSkewMat[0], scaleSkewMat[5], scaleSkewMat[10]);
@@ -120,7 +120,7 @@ Transform transform_from_mat4(const mat4& m)
 	return out;
 }
 
-vec3 transform_point(const Transform& a, const vec3& b)
+vec3 get_transformed_point(const Transform& a, const vec3& b)
 {
 	vec3 out = a.rotation * (a.scale * b);
 	out = a.position + out;
@@ -128,7 +128,7 @@ vec3 transform_point(const Transform& a, const vec3& b)
 	return out;
 }
 
-vec3 transform_vector(const Transform& a, const vec3& b)
+vec3 get_transformed_vector(const Transform& a, const vec3& b)
 {
 	return a.rotation * (a.scale * b);
 }

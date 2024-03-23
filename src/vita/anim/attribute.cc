@@ -68,7 +68,7 @@ template<typename T>
 void Attribute<T>::set_ptr(T* inputArray, unsigned int arrayLength)
 {
 	count = arrayLength;
-	unsigned int size = sizeof(T);
+	const auto size = sizeof(T);
 
 	glBindBuffer(GL_ARRAY_BUFFER, handle);
 	glBufferData(GL_ARRAY_BUFFER, size * count, inputArray, GL_STREAM_DRAW);

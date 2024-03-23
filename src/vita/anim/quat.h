@@ -41,14 +41,17 @@ vec3 operator*(const quat& q, const vec3& v);
 quat operator^(const quat& q, float f);
 
 bool is_same_orientation(const quat& left, const quat& right);
-float dot(const quat& a, const quat& b);
+
 float get_length_sq(const quat& q);
 float get_length(const quat& q);
-void normalize(quat& q);
 quat get_normalized(const quat& q);
-quat conjugate(const quat& q);
-quat inverse(const quat& q);
-quat mix(const quat& from, const quat& to, float t);
+quat get_conjugate(const quat& q);
+quat get_inverse(const quat& q);
+quat get_mixed(const quat& from, const quat& to, float t);
+
+void normalize(quat& q);
+
+float dot(const quat& a, const quat& b);
 quat nlerp(const quat& from, const quat& to, float t);
 quat slerp(const quat& start, const quat& end, float t);
 

@@ -169,12 +169,12 @@ quat get_normalized(const quat& q)
 	return quat(q.x * i_len, q.y * i_len, q.z * i_len, q.w * i_len);
 }
 
-quat conjugate(const quat& q)
+quat get_conjugate(const quat& q)
 {
 	return quat(-q.x, -q.y, -q.z, q.w);
 }
 
-quat inverse(const quat& q)
+quat get_inverse(const quat& q)
 {
 	const auto lenSq = q.x * q.x + q.y * q.y + q.z * q.z + q.w * q.w;
 	if (lenSq < QUAT_EPSILON)
@@ -204,7 +204,7 @@ vec3 operator*(const quat& q, const vec3& v)
 		 + cross(q.vector(), v) * 2.0f * q.scalar();
 }
 
-quat mix(const quat& from, const quat& to, float t)
+quat get_mixed(const quat& from, const quat& to, float t)
 {
 	return from * (1.0f - t) + to * t;
 }
@@ -232,7 +232,7 @@ quat slerp(const quat& start, const quat& end, float t)
 		return nlerp(start, end, t);
 	}
 
-	return get_normalized(((inverse(start) * end) ^ t) * start);
+	return get_normalized(((get_inverse(start) * end) ^ t) * start);
 }
 
 quat quat_from_look_rotation(const vec3& direcion, const vec3& up)
