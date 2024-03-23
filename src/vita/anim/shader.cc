@@ -14,7 +14,7 @@ Shader::Shader()
 {
 }
 
-Shader::Shader(const Source& vertex, const Source& fragment)
+Shader::Shader(const ShaderSource& vertex, const ShaderSource& fragment)
 	: handle(glCreateProgram())
 {
 	Load(vertex, fragment);
@@ -25,7 +25,7 @@ Shader::~Shader()
 	glDeleteProgram(handle);
 }
 
-Source ReadStringFile(const std::string& path)
+ShaderSource read_shader_file(const std::string& path)
 {
 	std::ifstream file(path);
 	std::stringstream contents;
@@ -181,7 +181,7 @@ std::unordered_map<std::string, int> PopulateUniforms(Shader* shader)
 	return uniforms;
 }
 
-void Shader::Load(const Source& vertex, const Source& fragment)
+void Shader::Load(const ShaderSource& vertex, const ShaderSource& fragment)
 {
 	unsigned int v_shader = CompileVertexShader(vertex.source);
 	unsigned int f_shader = CompileFragmentShader(fragment.source);
@@ -192,17 +192,17 @@ void Shader::Load(const Source& vertex, const Source& fragment)
 	}
 }
 
-void Shader::Bind()
+void Shader::bind()
 {
 	glUseProgram(handle);
 }
 
-void Shader::UnBind()
+void Shader::unbind()
 {
 	glUseProgram(0);
 }
 
-unsigned int Shader::GetAttribute(const std::string& name)
+unsigned int Shader::get_attribute(const std::string& name)
 {
 	auto it = attributes.find(name);
 	if (it == attributes.end())
@@ -214,7 +214,7 @@ unsigned int Shader::GetAttribute(const std::string& name)
 	return it->second;
 }
 
-int Shader::GetUniform(const std::string& name)
+int Shader::get_uniform(const std::string& name)
 {
 	auto it = uniforms.find(name);
 	if (it == uniforms.end())

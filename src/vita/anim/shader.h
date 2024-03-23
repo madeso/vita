@@ -1,11 +1,11 @@
 #pragma once
 
-struct Source
+struct ShaderSource
 {
 	std::string source;
 };
 
-Source ReadStringFile(const std::string& path);
+ShaderSource read_shader_file(const std::string& path);
 
 struct Shader
 {
@@ -20,14 +20,14 @@ struct Shader
 	Shader(Shader&) = delete;
 
 	Shader();
-	Shader(const Source& vertex, const Source& fragment);
+	Shader(const ShaderSource& vertex, const ShaderSource& fragment);
 	~Shader();
 
-	void Load(const Source& vertex, const Source& fragment);
+	void Load(const ShaderSource& vertex, const ShaderSource& fragment);
 
-	void Bind();
-	void UnBind();
+	void bind();
+	void unbind();
 
-	unsigned int GetAttribute(const std::string& name);
-	int GetUniform(const std::string& name);
+	unsigned int get_attribute(const std::string& name);
+	int get_uniform(const std::string& name);
 };

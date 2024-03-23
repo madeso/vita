@@ -93,7 +93,7 @@ void APIENTRY on_opengl_error(
 		SDL_LOG_CATEGORY_ERROR,
 		"---------------\n"
 		"Debug message (%d): %s\n"
-		"Source %s type: %s Severity: %s",
+		"ShaderSource %s type: %s Severity: %s",
 		id,
 		message,
 		source_to_string(source),

@@ -5,8 +5,8 @@
 
 namespace assets
 {
-Source static_shader();
-Source lit_shader();
+ShaderSource static_shader();
+ShaderSource lit_shader();
 
 TextureData uv_texture();
 }  //  namespace assets

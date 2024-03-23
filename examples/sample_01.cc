@@ -89,29 +89,29 @@ void Sample::on_render(float inAspectRatio)
 	mat4 view = mat4_from_look_at(vec3(0, 0, -5), vec3(0, 0, 0), vec3(0, 1, 0));
 	mat4 model = mat4_from_quat(quat_from_angle_axis(mRotation * DEG2RAD, vec3(0, 0, 1)));
 
-	mShader->Bind();
+	mShader->bind();
 
-	mVertexPositions->bind_to(mShader->GetAttribute("position"));
-	mVertexNormals->bind_to(mShader->GetAttribute("normal"));
-	mVertexTexCoords->bind_to(mShader->GetAttribute("texCoord"));
+	mVertexPositions->bind_to(mShader->get_attribute("position"));
+	mVertexNormals->bind_to(mShader->get_attribute("normal"));
+	mVertexTexCoords->bind_to(mShader->get_attribute("texCoord"));
 
-	Uniform<mat4>::Set(mShader->GetUniform("model"), model);
-	Uniform<mat4>::Set(mShader->GetUniform("view"), view);
-	Uniform<mat4>::Set(mShader->GetUniform("projection"), projection);
+	Uniform<mat4>::Set(mShader->get_uniform("model"), model);
+	Uniform<mat4>::Set(mShader->get_uniform("view"), view);
+	Uniform<mat4>::Set(mShader->get_uniform("projection"), projection);
 
-	Uniform<vec3>::Set(mShader->GetUniform("light"), vec3(0, 0, 1));
+	Uniform<vec3>::Set(mShader->get_uniform("light"), vec3(0, 0, 1));
 
-	mDisplayTexture->bind(mShader->GetUniform("tex0"), 0);
+	mDisplayTexture->bind(mShader->get_uniform("tex0"), 0);
 
 	draw(*mIndexBuffer, DrawMode::Triangles);
 
 	mDisplayTexture->unbind(0);
 
-	mVertexPositions->unbind_from(mShader->GetAttribute("position"));
-	mVertexNormals->unbind_from(mShader->GetAttribute("normal"));
-	mVertexTexCoords->unbind_from(mShader->GetAttribute("texCoord"));
+	mVertexPositions->unbind_from(mShader->get_attribute("position"));
+	mVertexNormals->unbind_from(mShader->get_attribute("normal"));
+	mVertexTexCoords->unbind_from(mShader->get_attribute("texCoord"));
 
-	mShader->UnBind();
+	mShader->unbind();
 }
 
 Sample::~Sample()

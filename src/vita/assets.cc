@@ -6,12 +6,12 @@
 
 namespace assets
 {
-Source static_shader()
+ShaderSource static_shader()
 {
 	return {std::string{STATIC_VERT}};
 }
 
-Source lit_shader()
+ShaderSource lit_shader()
 {
 	return {std::string{LIT_FRAG}};
 }
