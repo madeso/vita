@@ -85,8 +85,8 @@ void Sample::on_frame(float inDeltaTime)
 
 void Sample::on_render(float inAspectRatio)
 {
-	mat4 projection = perspective(60.0f, inAspectRatio, 0.01f, 1000.0f);
-	mat4 view = lookAt(vec3(0, 0, -5), vec3(0, 0, 0), vec3(0, 1, 0));
+	mat4 projection = mat4_from_perspective(60.0f, inAspectRatio, 0.01f, 1000.0f);
+	mat4 view = mat4_from_look_at(vec3(0, 0, -5), vec3(0, 0, 0), vec3(0, 1, 0));
 	mat4 model = quatToMat4(angleAxis(mRotation * DEG2RAD, vec3(0, 0, 1)));
 
 	mShader->Bind();

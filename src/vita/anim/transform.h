@@ -33,5 +33,5 @@ Transform inverse(const Transform& t);
 Transform mix(const Transform& a, const Transform& b, float t);
 mat4 transformToMat4(const Transform& t);
 Transform mat4ToTransform(const mat4& m);
-vec3 transformPoint(const Transform& a, const vec3& b);
-vec3 transformVector(const Transform& a, const vec3& b);
+vec3 transform_point(const Transform& a, const vec3& b);
+vec3 transform_vector(const Transform& a, const vec3& b);

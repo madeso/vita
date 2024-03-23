@@ -177,16 +177,17 @@ mat4 operator+(const mat4& a, const mat4& b);
 mat4 operator*(const mat4& a, const mat4& b);
 vec4 operator*(const mat4& m, const vec4& v);
 
-vec3 transformVector(const mat4& m, const vec3& v);
-vec3 transformPoint(const mat4& m, const vec3& v);
-vec3 transformPoint(const mat4& m, const vec3& v, float& w);
+vec3 transform_vector(const mat4& m, const vec3& v);
+vec3 transform_point(const mat4& m, const vec3& v);
+vec3 transform_point(const mat4& m, const vec3& v, float& w);
 void transpose(mat4& m);
 mat4 transposed(const mat4& m);
 float determinant(const mat4& m);
 mat4 adjugate(const mat4& m);
 mat4 inverse(const mat4& m);
 void invert(mat4& m);
-mat4 frustum(float l, float r, float b, float t, float n, float f);
-mat4 perspective(float fov, float aspect, float znear, float zfar);
-mat4 ortho(float l, float r, float b, float t, float n, float f);
-mat4 lookAt(const vec3& position, const vec3& target, const vec3& up);
+
+mat4 mat4_from_frustum(float l, float r, float b, float t, float n, float f);
+mat4 mat4_from_perspective(float fov, float aspect, float znear, float zfar);
+mat4 mat4_from_ortho(float l, float r, float b, float t, float n, float f);
+mat4 mat4_from_look_at(const vec3& position, const vec3& target, const vec3& up);

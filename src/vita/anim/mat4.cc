@@ -133,21 +133,21 @@ vec4 operator*(const mat4& m, const vec4& v)
 	);
 }
 
-vec3 transformVector(const mat4& m, const vec3& v)
+vec3 transform_vector(const mat4& m, const vec3& v)
 {
 	return vec3(
 		M4V4D(0, v.x, v.y, v.z, 0.0f), M4V4D(1, v.x, v.y, v.z, 0.0f), M4V4D(2, v.x, v.y, v.z, 0.0f)
 	);
 }
 
-vec3 transformPoint(const mat4& m, const vec3& v)
+vec3 transform_point(const mat4& m, const vec3& v)
 {
 	return vec3(
 		M4V4D(0, v.x, v.y, v.z, 1.0f), M4V4D(1, v.x, v.y, v.z, 1.0f), M4V4D(2, v.x, v.y, v.z, 1.0f)
 	);
 }
 
-vec3 transformPoint(const mat4& m, const vec3& v, float& w)
+vec3 transform_point(const mat4& m, const vec3& v, float& w)
 {
 	float _w = w;
 	w = M4V4D(3, v.x, v.y, v.z, _w);
@@ -262,7 +262,7 @@ void invert(mat4& m)
 	m = adjugate(m) * (1.0f / det);
 }
 
-mat4 frustum(float l, float r, float b, float t, float n, float f)
+mat4 mat4_from_frustum(float l, float r, float b, float t, float n, float f)
 {
 	if (l == r || t == b || n == f)
 	{
@@ -289,15 +289,15 @@ mat4 frustum(float l, float r, float b, float t, float n, float f)
 	);
 }
 
-mat4 perspective(float fov, float aspect, float znear, float zfar)
+mat4 mat4_from_perspective(float fov, float aspect, float znear, float zfar)
 {
 	float ymax = znear * tanf(fov * 3.14159265359f / 360.0f);
 	float xmax = ymax * aspect;
 
-	return frustum(-xmax, xmax, -ymax, ymax, znear, zfar);
+	return mat4_from_frustum(-xmax, xmax, -ymax, ymax, znear, zfar);
 }
 
-mat4 ortho(float l, float r, float b, float t, float n, float f)
+mat4 mat4_from_ortho(float l, float r, float b, float t, float n, float f)
 {
 	if (l == r || t == b || n == f)
 	{
@@ -323,7 +323,7 @@ mat4 ortho(float l, float r, float b, float t, float n, float f)
 	);
 }
 
-mat4 lookAt(const vec3& position, const vec3& target, const vec3& up)
+mat4 mat4_from_look_at(const vec3& position, const vec3& target, const vec3& up)
 {
 	// Remember, forward is negative z
 	vec3 f = normalized(target - position) * -1.0f;
