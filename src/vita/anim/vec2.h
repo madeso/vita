@@ -36,3 +36,6 @@ struct TVec2
 
 typedef TVec2<float> vec2;
 typedef TVec2<int> ivec2;
+
+static_assert(sizeof(vec2) == sizeof(float) * 2, "Invalid size");
+static_assert(sizeof(ivec2) == sizeof(int) * 2, "Invalid size");

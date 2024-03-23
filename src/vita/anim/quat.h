@@ -28,6 +28,7 @@ struct quat
 };
 
 #pragma pack(pop)
+static_assert(sizeof(quat) == sizeof(float) * 4, "Invalid size");
 
 quat operator+(const quat& a, const quat& b);
 quat operator-(const quat& a, const quat& b);

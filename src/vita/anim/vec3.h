@@ -19,6 +19,7 @@ struct vec3
 	vec3(float* fv);
 };
 
+static_assert(sizeof(vec3) == sizeof(float) * 3, "Invalid size");
 #pragma pack(pop)
 
 vec3 operator+(const vec3& l, const vec3& r);

@@ -47,3 +47,7 @@ struct TVec4
 typedef TVec4<float> vec4;
 typedef TVec4<int> ivec4;
 typedef TVec4<unsigned int> uivec4;
+
+static_assert(sizeof(vec4) == sizeof(float) * 4, "Invalid size");
+static_assert(sizeof(ivec4) == sizeof(int) * 4, "Invalid size");
+static_assert(sizeof(uivec4) == sizeof(unsigned int) * 4, "Invalid size");

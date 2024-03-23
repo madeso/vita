@@ -168,6 +168,7 @@ struct mat4
 	}
 };
 
+static_assert(sizeof(mat4) == sizeof(float) * 16, "Invalid size");
 #pragma pack(pop)
 
 bool operator==(const mat4& a, const mat4& b);
