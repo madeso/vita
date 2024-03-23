@@ -61,81 +61,82 @@ float get_length_sq(const vec3& v)
 
 float get_length(const vec3& v)
 {
-	float lenSq = v.x * v.x + v.y * v.y + v.z * v.z;
-	if (lenSq < VEC3_EPSILON)
+	float length_sq = get_length_sq(v);
+	if (length_sq < VEC3_EPSILON)
 	{
 		return 0.0f;
 	}
-	return sqrtf(lenSq);
+	return sqrtf(length_sq);
 }
 
 void normalize(vec3& v)
 {
-	float lenSq = v.x * v.x + v.y * v.y + v.z * v.z;
-	if (lenSq < VEC3_EPSILON)
+	const auto length_sq = get_length_sq(v);
+	if (length_sq < VEC3_EPSILON)
 	{
 		return;
 	}
-	float invLen = 1.0f / sqrtf(lenSq);
 
-	v.x *= invLen;
-	v.y *= invLen;
-	v.z *= invLen;
+	const auto length_inv = 1.0f / sqrtf(length_sq);
+	v.x *= length_inv;
+	v.y *= length_inv;
+	v.z *= length_inv;
 }
 
 vec3 get_normalized(const vec3& v)
 {
-	float lenSq = v.x * v.x + v.y * v.y + v.z * v.z;
-	if (lenSq < VEC3_EPSILON)
+	const auto length_sq = get_length_sq(v);
+	if (length_sq < VEC3_EPSILON)
 	{
 		return v;
 	}
-	float invLen = 1.0f / sqrtf(lenSq);
 
-	return vec3(v.x * invLen, v.y * invLen, v.z * invLen);
+	const auto length_inv = 1.0f / sqrtf(length_sq);
+	return vec3(v.x * length_inv, v.y * length_inv, v.z * length_inv);
 }
 
-float angle(const vec3& l, const vec3& r)
+float angle_between(const vec3& l, const vec3& r)
 {
-	float sqMagL = l.x * l.x + l.y * l.y + l.z * l.z;
-	float sqMagR = r.x * r.x + r.y * r.y + r.z * r.z;
+	float sqMagL = get_length_sq(l);
+	float sqMagR = get_length_sq(r);
 
 	if (sqMagL < VEC3_EPSILON || sqMagR < VEC3_EPSILON)
 	{
 		return 0.0f;
 	}
 
-	float dot = l.x * r.x + l.y * r.y + l.z * r.z;
-	float len = sqrtf(sqMagL) * sqrtf(sqMagR);
-	return acosf(dot / len);
+	const auto len = sqrtf(sqMagL) * sqrtf(sqMagR);
+	return acosf(dot(l, r) / len);
 }
 
 vec3 project(const vec3& a, const vec3& b)
 {
-	float magBSq = get_length_sq(b);
+	const auto magBSq = get_length_sq(b);
 	if (magBSq < VEC3_EPSILON)
 	{
 		return vec3();
 	}
-	float scale = dot(a, b) / magBSq;
+
+	const auto scale = dot(a, b) / magBSq;
 	return b * scale;
 }
 
 vec3 reject(const vec3& a, const vec3& b)
 {
-	vec3 projection = project(a, b);
+	const auto projection = project(a, b);
 	return a - projection;
 }
 
 vec3 reflect(const vec3& a, const vec3& b)
 {
-	float magBSq = get_length_sq(b);
+	const auto magBSq = get_length_sq(b);
 	if (magBSq < VEC3_EPSILON)
 	{
 		return vec3();
 	}
-	float scale = dot(a, b) / magBSq;
-	vec3 proj2 = b * (scale * 2);
+
+	const auto scale = dot(a, b) / magBSq;
+	const auto proj2 = b * (scale * 2);
 	return a - proj2;
 }
 
@@ -151,19 +152,14 @@ vec3 lerp(const vec3& s, const vec3& e, float t)
 
 vec3 slerp(const vec3& s, const vec3& e, float t)
 {
-	if (t < 0.01f)
-	{
-		return lerp(s, e, t);
-	}
+	const auto from = get_normalized(s);
+	const auto to = get_normalized(e);
 
-	vec3 from = get_normalized(s);
-	vec3 to = get_normalized(e);
+	const auto theta = angle_between(from, to);
+	const auto sin_theta = sinf(theta);
 
-	float theta = angle(from, to);
-	float sin_theta = sinf(theta);
-
-	float a = sinf((1.0f - t) * theta) / sin_theta;
-	float b = sinf(t * theta) / sin_theta;
+	const auto a = sinf((1.0f - t) * theta) / sin_theta;
+	const auto b = sinf(t * theta) / sin_theta;
 
 	return from * a + to * b;
 }
@@ -176,7 +172,7 @@ vec3 nlerp(const vec3& s, const vec3& e, float t)
 
 bool operator==(const vec3& l, const vec3& r)
 {
-	vec3 diff(l - r);
+	const auto diff = l - r;
 	return get_length_sq(diff) < VEC3_EPSILON;
 }
 
