@@ -27,6 +27,13 @@ set(src_base
     vita/anim/uniform.cc vita/anim/uniform.h
     vita/anim/vec2.h vita/anim/vec3.cc
     vita/anim/vec3.h vita/anim/vec4.h
+
+    # chapter 08
+    vita/anim/track.cc vita/anim/track.h
+    vita/anim/transformtrack.cc vita/anim/transformtrack.h
+    vita/anim/frame.h
+    vita/anim/interpolation.h
+    vita/anim/debugdraw.cc vita/anim/debugdraw.h
     
     vita/vita.cc vita/vita.h
     vita/opengl_utils.cc vita/opengl_utils.h
