@@ -10,12 +10,8 @@
 template<typename T, int N>
 struct Track
 {
-   protected:
-
 	std::vector<Frame<N>> mFrames;
 	Interpolation mInterpolation;
-
-   protected:
 
 	T SampleConstant(float time, bool looping);
 	T SampleLinear(float time, bool looping);
@@ -25,9 +21,8 @@ struct Track
 	float AdjustTimeToFitTrack(float time, bool looping);
 	T Cast(float* value);
 
-   public:
+	Track(const std::vector<Frame<N>>& fra, Interpolation in);
 
-	Track();
 	void Resize(unsigned int size);
 	unsigned int Size();
 	Interpolation GetInterpolation();

@@ -2,7 +2,6 @@
 #include <vector>
 
 #include <iostream>
-#include <cstdarg>
 
 #include "vita/vita.h"
 #include "vita/anim/debugdraw.h"
@@ -78,96 +77,47 @@ struct Sample : public App
 		return result;
 	}
 
-	ScalarTrack MakeScalarTrack(Interpolation interp, unsigned int numFrames, ...)
+	ScalarTrack MakeScalarTrack(Interpolation interp, const std::vector<ScalarFrame>& frames)
 	{
-		ScalarTrack result;
-		result.SetInterpolation(interp);
-		result.Resize(numFrames);
-
-		va_list args;
-		va_start(args, numFrames);
-
-		for (unsigned int i = 0; i < numFrames; ++i)
-		{
-			result[i] = va_arg(args, ScalarFrame);
-		}
-
-		va_end(args);
-
-		return result;
+		return {frames, interp};
 	}
 
-	VectorTrack MakeVectorTrack(Interpolation interp, unsigned int numFrames, ...)
+	VectorTrack MakeVectorTrack(Interpolation interp, const std::vector<VectorFrame>& frames)
 	{
-		VectorTrack result;
-		result.SetInterpolation(interp);
-		result.Resize(numFrames);
-
-		va_list args;
-		va_start(args, numFrames);
-
-		for (unsigned int i = 0; i < numFrames; ++i)
-		{
-			result[i] = va_arg(args, VectorFrame);
-		}
-
-		va_end(args);
-
-		return result;
+		return {frames, interp};
 	}
 
-	QuaternionTrack MakeQuaternionTrack(Interpolation interp, unsigned int numFrames, ...)
+	QuaternionTrack MakeQuaternionTrack(Interpolation interp, std::vector<QuaternionFrame> frames)
 	{
-		QuaternionTrack result;
-		result.SetInterpolation(interp);
-		result.Resize(numFrames);
-
-		va_list args;
-		va_start(args, numFrames);
-
-		for (unsigned int i = 0; i < numFrames; ++i)
-		{
-			result[i] = va_arg(args, QuaternionFrame);
-		}
-
-		va_end(args);
-
-		return result;
+		return {frames, interp};
 	}
 
 	Sample()
 	{
 		mScalarTracks.push_back(
-			MakeScalarTrack(Interpolation::Linear, 2, MakeFrame(0.0f, 0.0f), MakeFrame(1.0f, 1.0f))
+			MakeScalarTrack(Interpolation::Linear, {MakeFrame(0.0f, 0.0f), MakeFrame(1.0f, 1.0f)})
 		);
 		mScalarTracksLooping.push_back(false);
 
 		mScalarTracks.push_back(
-			MakeScalarTrack(Interpolation::Linear, 2, MakeFrame(0.0f, 0.0f), MakeFrame(0.5f, 1.0f))
+			MakeScalarTrack(Interpolation::Linear, {MakeFrame(0.0f, 0.0f), MakeFrame(0.5f, 1.0f)})
 		);
 		mScalarTracksLooping.push_back(false);
 
 		mScalarTracks.push_back(MakeScalarTrack(
 			Interpolation::Linear,
-			3,
-			MakeFrame(0.25f, 0.0f),
-			MakeFrame(0.5f, 1.0f),
-			MakeFrame(0.75f, 0.0f)
+			{MakeFrame(0.25f, 0.0f), MakeFrame(0.5f, 1.0f), MakeFrame(0.75f, 0.0f)}
 		));
 		mScalarTracksLooping.push_back(true);
 
 		mScalarTracks.push_back(MakeScalarTrack(
 			Interpolation::Linear,
-			3,
-			MakeFrame(0.25f, 0.0f),
-			MakeFrame(0.5f, 1.0f),
-			MakeFrame(0.75f, 0.0f)
+			{MakeFrame(0.25f, 0.0f), MakeFrame(0.5f, 1.0f), MakeFrame(0.75f, 0.0f)}
 		));
 		mScalarTracksLooping.push_back(false);
 
-		ScalarTrack stepTrack;
+		ScalarTrack stepTrack{{}, Interpolation::Constant};
 		stepTrack.Resize(11);
-		stepTrack.SetInterpolation(Interpolation::Constant);
 		for (unsigned int i = 0; i < 11; ++i)
 		{
 			float time = static_cast<float>(i) / 10.0f * 0.5f + 0.25f;
@@ -180,40 +130,34 @@ struct Sample : public App
 
 		mScalarTracks.push_back(MakeScalarTrack(
 			Interpolation::Cubic,
-			2,
-			MakeFrame(0.25f, 0.676221f, 0.0f, 0.676221f),
-			MakeFrame(0.75f, 4.043837f, 1.0f, 4.043837f)
+			{MakeFrame(0.25f, 0.676221f, 0.0f, 0.676221f),
+			 MakeFrame(0.75f, 4.043837f, 1.0f, 4.043837f)}
 		));
 		mScalarTracksLooping.push_back(false);
 
 		mScalarTracks.push_back(MakeScalarTrack(
 			Interpolation::Cubic,
-			3,
-			MakeFrame(0.25f, 0, 0, 0),
-			MakeFrame(0.5f, 0, 1, 0),
-			MakeFrame(0.75f, 0, 0, 0)
+			{MakeFrame(0.25f, 0, 0, 0), MakeFrame(0.5f, 0, 1, 0), MakeFrame(0.75f, 0, 0, 0)}
 		));
 		mScalarTracksLooping.push_back(true);
 
 		mScalarTracks.push_back(MakeScalarTrack(
 			Interpolation::Cubic,
-			5,
-			MakeFrame(0.25f, 0, 0, 0),
-			MakeFrame(0.3833333f, -10.11282f, 0.5499259f, -10.11282f),
-			MakeFrame(0.5f, 25.82528f, 1, 25.82528f),
-			MakeFrame(0.6333333f, 7.925411f, 0.4500741f, 7.925411f),
-			MakeFrame(0.75f, 0, 0, 0)
+			{MakeFrame(0.25f, 0, 0, 0),
+			 MakeFrame(0.3833333f, -10.11282f, 0.5499259f, -10.11282f),
+			 MakeFrame(0.5f, 25.82528f, 1, 25.82528f),
+			 MakeFrame(0.6333333f, 7.925411f, 0.4500741f, 7.925411f),
+			 MakeFrame(0.75f, 0, 0, 0)}
 		));
 		mScalarTracksLooping.push_back(true);
 
 		mScalarTracks.push_back(MakeScalarTrack(
 			Interpolation::Cubic,
-			5,
-			MakeFrame(0.25f, 0, 0, 0),
-			MakeFrame(0.3833333f, 13.25147f, 0.5499259f, -10.11282f),
-			MakeFrame(0.5f, 10.2405f, 1, -5.545671f),
-			MakeFrame(0.6333333f, 7.925411f, 0.4500741f, -11.40672f),
-			MakeFrame(0.75f, 0, 0, 0)
+			{MakeFrame(0.25f, 0, 0, 0),
+			 MakeFrame(0.3833333f, 13.25147f, 0.5499259f, -10.11282f),
+			 MakeFrame(0.5f, 10.2405f, 1, -5.545671f),
+			 MakeFrame(0.6333333f, 7.925411f, 0.4500741f, -11.40672f),
+			 MakeFrame(0.75f, 0, 0, 0)}
 		));
 		mScalarTracksLooping.push_back(true);
 

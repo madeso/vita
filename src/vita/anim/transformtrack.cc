@@ -1,6 +1,9 @@
 #include "vita/anim/transformtrack.h"
 
 TransformTrack::TransformTrack()
+	: mPosition{{}, Interpolation::Linear}
+	, mRotation{{}, Interpolation::Linear}
+	, mScale{{}, Interpolation::Linear}
 {
 	mId = 0;
 }

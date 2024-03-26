@@ -5,14 +5,10 @@
 
 struct TransformTrack
 {
-   protected:
-
 	unsigned int mId;
 	VectorTrack mPosition;
 	QuaternionTrack mRotation;
 	VectorTrack mScale;
-
-   public:
 
 	TransformTrack();
 	unsigned int GetId();

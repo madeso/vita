@@ -59,9 +59,10 @@ void inline Neighborhood(const quat& a, quat& b)
 };	//  namespace TrackHelpers
 
 template<typename T, int N>
-Track<T, N>::Track()
+Track<T, N>::Track(const std::vector<Frame<N>>& fra, Interpolation in)
+	: mFrames(fra)
+	, mInterpolation(in)
 {
-	mInterpolation = Interpolation::Linear;
 }
 
 template<typename T, int N>
