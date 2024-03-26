@@ -34,47 +34,17 @@ struct Sample : public App
 
 	ScalarFrame MakeFrame(float time, float in, float value, float out)
 	{
-		ScalarFrame result;
-		result.mTime = time;
-		result.mIn[0] = in;
-		result.mValue[0] = value;
-		result.mOut[0] = out;
-		return result;
+		return {time, in, out, value};
 	}
 
 	VectorFrame MakeFrame(float time, const vec3& in, const vec3& value, const vec3& out)
 	{
-		VectorFrame result;
-		result.mTime = time;
-		result.mIn[0] = in.x;
-		result.mIn[1] = in.y;
-		result.mIn[2] = in.z;
-		result.mValue[0] = value.x;
-		result.mValue[1] = value.y;
-		result.mValue[2] = value.z;
-		result.mOut[0] = out.x;
-		result.mOut[1] = out.y;
-		result.mOut[2] = out.z;
-		return result;
+		return {time, in, out, value};
 	}
 
 	QuaternionFrame MakeFrame(float time, const quat& in, const quat& out, const quat& value)
 	{
-		QuaternionFrame result;
-		result.mTime = time;
-		result.mIn[0] = in.x;
-		result.mIn[1] = in.y;
-		result.mIn[2] = in.z;
-		result.mIn[3] = in.w;
-		result.mValue[0] = value.x;
-		result.mValue[1] = value.y;
-		result.mValue[2] = value.z;
-		result.mValue[3] = value.w;
-		result.mOut[0] = out.x;
-		result.mOut[1] = out.y;
-		result.mOut[2] = out.z;
-		result.mOut[3] = out.w;
-		return result;
+		return {time, in, out, get_normalized(value)};
 	}
 
 	ScalarTrack MakeScalarTrack(Interpolation interp, const std::vector<ScalarFrame>& frames)

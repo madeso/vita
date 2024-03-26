@@ -58,27 +58,27 @@ void inline Neighborhood(const quat& a, quat& b)
 }
 };	//  namespace TrackHelpers
 
-template<typename T, int N>
-Track<T, N>::Track(const std::vector<Frame<N>>& fra, Interpolation in)
+template<typename T>
+Track<T>::Track(const std::vector<Frame<T>>& fra, Interpolation in)
 	: mFrames(fra)
 	, mInterpolation(in)
 {
 }
 
-template<typename T, int N>
-float Track<T, N>::GetStartTime()
+template<typename T>
+float Track<T>::GetStartTime()
 {
 	return mFrames[0].mTime;
 }
 
-template<typename T, int N>
-float Track<T, N>::GetEndTime()
+template<typename T>
+float Track<T>::GetEndTime()
 {
 	return mFrames[mFrames.size() - 1].mTime;
 }
 
-template<typename T, int N>
-T Track<T, N>::Sample(float time, bool looping)
+template<typename T>
+T Track<T>::Sample(float time, bool looping)
 {
 	if (mInterpolation == Interpolation::Constant)
 	{
@@ -91,38 +91,38 @@ T Track<T, N>::Sample(float time, bool looping)
 	return SampleCubic(time, looping);
 }
 
-template<typename T, int N>
-Frame<N>& Track<T, N>::operator[](unsigned int index)
+template<typename T>
+Frame<T>& Track<T>::operator[](unsigned int index)
 {
 	return mFrames[index];
 }
 
-template<typename T, int N>
-void Track<T, N>::Resize(unsigned int size)
+template<typename T>
+void Track<T>::Resize(unsigned int size)
 {
 	mFrames.resize(size);
 }
 
-template<typename T, int N>
-unsigned int Track<T, N>::Size()
+template<typename T>
+unsigned int Track<T>::Size()
 {
 	return static_cast<unsigned int>(mFrames.size());
 }
 
-template<typename T, int N>
-Interpolation Track<T, N>::GetInterpolation()
+template<typename T>
+Interpolation Track<T>::GetInterpolation()
 {
 	return mInterpolation;
 }
 
-template<typename T, int N>
-void Track<T, N>::SetInterpolation(Interpolation interpolation)
+template<typename T>
+void Track<T>::SetInterpolation(Interpolation interpolation)
 {
 	mInterpolation = interpolation;
 }
 
-template<typename T, int N>
-T Track<T, N>::Hermite(float t, const T& p1, const T& s1, const T& _p2, const T& s2)
+template<typename T>
+T Track<T>::Hermite(float t, const T& p1, const T& s1, const T& _p2, const T& s2)
 {
 	float tt = t * t;
 	float ttt = tt * t;
@@ -139,8 +139,8 @@ T Track<T, N>::Hermite(float t, const T& p1, const T& s1, const T& _p2, const T&
 	return TrackHelpers::AdjustHermiteResult(result);
 }
 
-template<typename T, int N>
-int Track<T, N>::FrameIndex(float time, bool looping)
+template<typename T>
+int Track<T>::FrameIndex(float time, bool looping)
 {
 	unsigned int size = static_cast<unsigned int>(mFrames.size());
 	if (size <= 1)
@@ -182,8 +182,8 @@ int Track<T, N>::FrameIndex(float time, bool looping)
 	return -1;
 }
 
-template<typename T, int N>
-float Track<T, N>::AdjustTimeToFitTrack(float time, bool looping)
+template<typename T>
+float Track<T>::AdjustTimeToFitTrack(float time, bool looping)
 {
 	unsigned int size = static_cast<unsigned int>(mFrames.size());
 	if (size <= 1)
@@ -222,27 +222,8 @@ float Track<T, N>::AdjustTimeToFitTrack(float time, bool looping)
 	return time;
 }
 
-template<>
-float Track<float, 1>::Cast(float* value)
-{
-	return value[0];
-}
-
-template<>
-vec3 Track<vec3, 3>::Cast(float* value)
-{
-	return vec3(value[0], value[1], value[2]);
-}
-
-template<>
-quat Track<quat, 4>::Cast(float* value)
-{
-	quat r = quat(value[0], value[1], value[2], value[3]);
-	return get_normalized(r);
-}
-
-template<typename T, int N>
-T Track<T, N>::SampleConstant(float time, bool looping)
+template<typename T>
+T Track<T>::SampleConstant(float time, bool looping)
 {
 	int frame = FrameIndex(time, looping);
 	if (frame < 0 || frame >= static_cast<int>(mFrames.size()))
@@ -250,11 +231,11 @@ T Track<T, N>::SampleConstant(float time, bool looping)
 		return T();
 	}
 
-	return Cast(&mFrames[static_cast<unsigned int>(frame)].mValue[0]);
+	return mFrames[static_cast<unsigned int>(frame)].mValue;
 }
 
-template<typename T, int N>
-T Track<T, N>::SampleLinear(float time, bool looping)
+template<typename T>
+T Track<T>::SampleLinear(float time, bool looping)
 {
 	int thisFrame = FrameIndex(time, looping);
 	if (thisFrame < 0 || thisFrame >= static_cast<int>(mFrames.size() - 1))
@@ -272,14 +253,14 @@ T Track<T, N>::SampleLinear(float time, bool looping)
 	}
 	float t = (trackTime - mFrames[static_cast<unsigned int>(thisFrame)].mTime) / frameDelta;
 
-	T start = Cast(&mFrames[static_cast<unsigned int>(thisFrame)].mValue[0]);
-	T end = Cast(&mFrames[static_cast<unsigned int>(nextFrame)].mValue[0]);
+	T start = mFrames[static_cast<unsigned int>(thisFrame)].mValue;
+	T end = mFrames[static_cast<unsigned int>(nextFrame)].mValue;
 
 	return TrackHelpers::Interpolate(start, end, t);
 }
 
-template<typename T, int N>
-T Track<T, N>::SampleCubic(float time, bool looping)
+template<typename T>
+T Track<T>::SampleCubic(float time, bool looping)
 {
 	int thisFrame = FrameIndex(time, looping);
 	if (thisFrame < 0 || thisFrame >= static_cast<int>(mFrames.size() - 1))
@@ -297,19 +278,15 @@ T Track<T, N>::SampleCubic(float time, bool looping)
 	}
 	float t = (trackTime - mFrames[static_cast<unsigned int>(thisFrame)].mTime) / frameDelta;
 
-	T point1 = Cast(&mFrames[static_cast<unsigned int>(thisFrame)].mValue[0]);
-	T slope1;  // = mFrames[thisFrame].mOut * frameDelta;
-	memcpy(&slope1, mFrames[static_cast<unsigned int>(thisFrame)].mOut, N * sizeof(float));
-	slope1 = slope1 * frameDelta;
+	T point1 = mFrames[static_cast<unsigned int>(thisFrame)].mValue;
+	T slope1 = mFrames[static_cast<unsigned int>(thisFrame)].mOut * frameDelta;
 
-	T point2 = Cast(&mFrames[static_cast<unsigned int>(nextFrame)].mValue[0]);
-	T slope2;  // = mFrames[nextFrame].mIn[0] * frameDelta;
-	memcpy(&slope2, mFrames[static_cast<unsigned int>(nextFrame)].mIn, N * sizeof(float));
-	slope2 = slope2 * frameDelta;
+	T point2 = mFrames[static_cast<unsigned int>(nextFrame)].mValue;
+	T slope2 = mFrames[static_cast<unsigned int>(nextFrame)].mIn * frameDelta;
 
 	return Hermite(t, point1, slope1, point2, slope2);
 }
 
-template struct Track<float, 1>;
-template struct Track<vec3, 3>;
-template struct Track<quat, 4>;
+template struct Track<float>;
+template struct Track<vec3>;
+template struct Track<quat>;
