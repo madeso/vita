@@ -237,24 +237,25 @@ T Track<T>::SampleConstant(float time, bool looping)
 template<typename T>
 T Track<T>::SampleLinear(float time, bool looping)
 {
-	int thisFrame = FrameIndex(time, looping);
-	if (thisFrame < 0 || thisFrame >= static_cast<int>(mFrames.size() - 1))
+	const auto thisFrameIndex = FrameIndex(time, looping);
+	if (thisFrameIndex < 0 || thisFrameIndex >= static_cast<int>(mFrames.size() - 1))
 	{
 		return T();
 	}
-	int nextFrame = thisFrame + 1;
+	const auto nextFrameIndex = thisFrameIndex + 1;
+	const auto& thisFrame = mFrames[static_cast<unsigned int>(thisFrameIndex)];
+	const auto& nextFrame = mFrames[static_cast<unsigned int>(nextFrameIndex)];
 
 	float trackTime = AdjustTimeToFitTrack(time, looping);
-	float frameDelta = mFrames[static_cast<unsigned int>(nextFrame)].mTime
-					 - mFrames[static_cast<unsigned int>(thisFrame)].mTime;
+	float frameDelta = nextFrame.mTime - thisFrame.mTime;
 	if (frameDelta <= 0.0f)
 	{
 		return T();
 	}
-	float t = (trackTime - mFrames[static_cast<unsigned int>(thisFrame)].mTime) / frameDelta;
+	float t = (trackTime - thisFrame.mTime) / frameDelta;
 
-	T start = mFrames[static_cast<unsigned int>(thisFrame)].mValue;
-	T end = mFrames[static_cast<unsigned int>(nextFrame)].mValue;
+	T start = thisFrame.mValue;
+	T end = nextFrame.mValue;
 
 	return TrackHelpers::Interpolate(start, end, t);
 }
@@ -262,27 +263,28 @@ T Track<T>::SampleLinear(float time, bool looping)
 template<typename T>
 T Track<T>::SampleCubic(float time, bool looping)
 {
-	int thisFrame = FrameIndex(time, looping);
-	if (thisFrame < 0 || thisFrame >= static_cast<int>(mFrames.size() - 1))
+	const auto thisFrameIndex = FrameIndex(time, looping);
+	if (thisFrameIndex < 0 || thisFrameIndex >= static_cast<int>(mFrames.size() - 1))
 	{
 		return T();
 	}
-	int nextFrame = thisFrame + 1;
+	const auto nextFrameIndex = thisFrameIndex + 1;
+	const auto& thisFrame = mFrames[static_cast<unsigned int>(thisFrameIndex)];
+	const auto& nextFrame = mFrames[static_cast<unsigned int>(nextFrameIndex)];
 
 	float trackTime = AdjustTimeToFitTrack(time, looping);
-	float frameDelta = mFrames[static_cast<unsigned int>(nextFrame)].mTime
-					 - mFrames[static_cast<unsigned int>(thisFrame)].mTime;
+	float frameDelta = nextFrame.mTime - thisFrame.mTime;
 	if (frameDelta <= 0.0f)
 	{
 		return T();
 	}
-	float t = (trackTime - mFrames[static_cast<unsigned int>(thisFrame)].mTime) / frameDelta;
+	float t = (trackTime - thisFrame.mTime) / frameDelta;
 
-	T point1 = mFrames[static_cast<unsigned int>(thisFrame)].mValue;
-	T slope1 = mFrames[static_cast<unsigned int>(thisFrame)].mOut * frameDelta;
+	T point1 = thisFrame.mValue;
+	T slope1 = thisFrame.mOut * frameDelta;
 
-	T point2 = mFrames[static_cast<unsigned int>(nextFrame)].mValue;
-	T slope2 = mFrames[static_cast<unsigned int>(nextFrame)].mIn * frameDelta;
+	T point2 = nextFrame.mValue;
+	T slope2 = nextFrame.mIn * frameDelta;
 
 	return Hermite(t, point1, slope1, point2, slope2);
 }
