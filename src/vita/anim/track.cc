@@ -59,70 +59,7 @@ void inline Neighborhood(const quat& a, quat& b)
 };	//  namespace TrackHelpers
 
 template<typename T>
-Track<T>::Track(const std::vector<Frame<T>>& fra, Interpolation in)
-	: mFrames(fra)
-	, mInterpolation(in)
-{
-}
-
-template<typename T>
-float Track<T>::GetStartTime()
-{
-	return mFrames[0].mTime;
-}
-
-template<typename T>
-float Track<T>::GetEndTime()
-{
-	return mFrames[mFrames.size() - 1].mTime;
-}
-
-template<typename T>
-T Track<T>::Sample(float time, bool looping)
-{
-	if (mInterpolation == Interpolation::Constant)
-	{
-		return SampleConstant(time, looping);
-	}
-	else if (mInterpolation == Interpolation::Linear)
-	{
-		return SampleLinear(time, looping);
-	}
-	return SampleCubic(time, looping);
-}
-
-template<typename T>
-Frame<T>& Track<T>::operator[](unsigned int index)
-{
-	return mFrames[index];
-}
-
-template<typename T>
-void Track<T>::Resize(unsigned int size)
-{
-	mFrames.resize(size);
-}
-
-template<typename T>
-unsigned int Track<T>::Size()
-{
-	return static_cast<unsigned int>(mFrames.size());
-}
-
-template<typename T>
-Interpolation Track<T>::GetInterpolation()
-{
-	return mInterpolation;
-}
-
-template<typename T>
-void Track<T>::SetInterpolation(Interpolation interpolation)
-{
-	mInterpolation = interpolation;
-}
-
-template<typename T>
-T Track<T>::Hermite(float t, const T& p1, const T& s1, const T& _p2, const T& s2)
+T Hermite(float t, const T& p1, const T& s1, const T& _p2, const T& s2)
 {
 	float tt = t * t;
 	float ttt = tt * t;
@@ -140,17 +77,18 @@ T Track<T>::Hermite(float t, const T& p1, const T& s1, const T& _p2, const T& s2
 }
 
 template<typename T>
-int Track<T>::FrameIndex(float time, bool looping)
+int FrameIndex(const Track<T>& track, float time, bool looping)
 {
-	unsigned int size = static_cast<unsigned int>(mFrames.size());
-	if (size <= 1)
+	if (track.is_valid() == false)
 	{
 		return -1;
 	}
+
+	unsigned int size = static_cast<unsigned int>(track.frames.size());
 	if (looping)
 	{
-		float startTime = mFrames[0].mTime;
-		float endTime = mFrames[size - 1].mTime;
+		float startTime = track.frames[0].time;
+		float endTime = track.frames[size - 1].time;
 		// float duration = endTime - startTime;
 
 		time = std::fmod(time - startTime, endTime - startTime);
@@ -162,18 +100,18 @@ int Track<T>::FrameIndex(float time, bool looping)
 	}
 	else
 	{
-		if (time <= mFrames[0].mTime)
+		if (time <= track.frames[0].time)
 		{
 			return 0;
 		}
-		if (time >= mFrames[size - 2].mTime)
+		if (time >= track.frames[size - 2].time)
 		{
 			return static_cast<int>(size) - 2;
 		}
 	}
 	for (int i = static_cast<int>(size) - 1; i >= 0; --i)
 	{
-		if (time >= mFrames[static_cast<unsigned int>(i)].mTime)
+		if (time >= track.frames[static_cast<unsigned int>(i)].time)
 		{
 			return i;
 		}
@@ -183,16 +121,16 @@ int Track<T>::FrameIndex(float time, bool looping)
 }
 
 template<typename T>
-float Track<T>::AdjustTimeToFitTrack(float time, bool looping)
+float AdjustTimeToFitTrack(const Track<T>& track, float time, bool looping)
 {
-	unsigned int size = static_cast<unsigned int>(mFrames.size());
-	if (size <= 1)
+	if (track.is_valid() == false)
 	{
 		return 0.0f;
 	}
 
-	float startTime = mFrames[0].mTime;
-	float endTime = mFrames[size - 1].mTime;
+	unsigned int size = static_cast<unsigned int>(track.frames.size());
+	float startTime = track.frames[0].time;
+	float endTime = track.frames[size - 1].time;
 	float duration = endTime - startTime;
 	if (duration <= 0.0f)
 	{
@@ -209,11 +147,11 @@ float Track<T>::AdjustTimeToFitTrack(float time, bool looping)
 	}
 	else
 	{
-		if (time <= mFrames[0].mTime)
+		if (time <= track.frames[0].time)
 		{
 			time = startTime;
 		}
-		if (time >= mFrames[size - 1].mTime)
+		if (time >= track.frames[size - 1].time)
 		{
 			time = endTime;
 		}
@@ -223,70 +161,109 @@ float Track<T>::AdjustTimeToFitTrack(float time, bool looping)
 }
 
 template<typename T>
-T Track<T>::SampleConstant(float time, bool looping)
+T SampleConstant(const Track<T>& track, float time, bool looping)
 {
-	int frame = FrameIndex(time, looping);
-	if (frame < 0 || frame >= static_cast<int>(mFrames.size()))
+	int frame = FrameIndex(track, time, looping);
+	if (frame < 0 || frame >= static_cast<int>(track.frames.size()))
 	{
 		return T();
 	}
 
-	return mFrames[static_cast<unsigned int>(frame)].mValue;
+	return track.frames[static_cast<unsigned int>(frame)].value;
 }
 
 template<typename T>
-T Track<T>::SampleLinear(float time, bool looping)
+T SampleLinear(const Track<T>& track, float time, bool looping)
 {
-	const auto thisFrameIndex = FrameIndex(time, looping);
-	if (thisFrameIndex < 0 || thisFrameIndex >= static_cast<int>(mFrames.size() - 1))
+	const auto thisFrameIndex = FrameIndex(track, time, looping);
+	if (thisFrameIndex < 0 || thisFrameIndex >= static_cast<int>(track.frames.size() - 1))
 	{
 		return T();
 	}
 	const auto nextFrameIndex = thisFrameIndex + 1;
-	const auto& thisFrame = mFrames[static_cast<unsigned int>(thisFrameIndex)];
-	const auto& nextFrame = mFrames[static_cast<unsigned int>(nextFrameIndex)];
+	const auto& thisFrame = track.frames[static_cast<unsigned int>(thisFrameIndex)];
+	const auto& nextFrame = track.frames[static_cast<unsigned int>(nextFrameIndex)];
 
-	float trackTime = AdjustTimeToFitTrack(time, looping);
-	float frameDelta = nextFrame.mTime - thisFrame.mTime;
+	float trackTime = AdjustTimeToFitTrack(track, time, looping);
+	float frameDelta = nextFrame.time - thisFrame.time;
 	if (frameDelta <= 0.0f)
 	{
 		return T();
 	}
-	float t = (trackTime - thisFrame.mTime) / frameDelta;
+	float t = (trackTime - thisFrame.time) / frameDelta;
 
-	T start = thisFrame.mValue;
-	T end = nextFrame.mValue;
+	T start = thisFrame.value;
+	T end = nextFrame.value;
 
 	return TrackHelpers::Interpolate(start, end, t);
 }
 
 template<typename T>
-T Track<T>::SampleCubic(float time, bool looping)
+T SampleCubic(const Track<T>& track, float time, bool looping)
 {
-	const auto thisFrameIndex = FrameIndex(time, looping);
-	if (thisFrameIndex < 0 || thisFrameIndex >= static_cast<int>(mFrames.size() - 1))
+	const auto thisFrameIndex = FrameIndex(track, time, looping);
+	if (thisFrameIndex < 0 || thisFrameIndex >= static_cast<int>(track.frames.size() - 1))
 	{
 		return T();
 	}
 	const auto nextFrameIndex = thisFrameIndex + 1;
-	const auto& thisFrame = mFrames[static_cast<unsigned int>(thisFrameIndex)];
-	const auto& nextFrame = mFrames[static_cast<unsigned int>(nextFrameIndex)];
+	const auto& thisFrame = track.frames[static_cast<unsigned int>(thisFrameIndex)];
+	const auto& nextFrame = track.frames[static_cast<unsigned int>(nextFrameIndex)];
 
-	float trackTime = AdjustTimeToFitTrack(time, looping);
-	float frameDelta = nextFrame.mTime - thisFrame.mTime;
+	float trackTime = AdjustTimeToFitTrack(track, time, looping);
+	float frameDelta = nextFrame.time - thisFrame.time;
 	if (frameDelta <= 0.0f)
 	{
 		return T();
 	}
-	float t = (trackTime - thisFrame.mTime) / frameDelta;
+	float t = (trackTime - thisFrame.time) / frameDelta;
 
-	T point1 = thisFrame.mValue;
-	T slope1 = thisFrame.mOut * frameDelta;
+	T point1 = thisFrame.value;
+	T slope1 = thisFrame.out * frameDelta;
 
-	T point2 = nextFrame.mValue;
-	T slope2 = nextFrame.mIn * frameDelta;
+	T point2 = nextFrame.value;
+	T slope2 = nextFrame.in * frameDelta;
 
 	return Hermite(t, point1, slope1, point2, slope2);
+}
+
+template<typename T>
+Track<T>::Track(const std::vector<Frame<T>>& fra, Interpolation in)
+	: frames(fra)
+	, interpolation(in)
+{
+}
+
+template<typename T>
+float Track<T>::get_start_time()
+{
+	return frames[0].time;
+}
+
+template<typename T>
+float Track<T>::get_end_time()
+{
+	return frames[frames.size() - 1].time;
+}
+
+template<typename T>
+T Track<T>::get_sample(float time, bool looping)
+{
+	if (interpolation == Interpolation::Constant)
+	{
+		return SampleConstant(*this, time, looping);
+	}
+	else if (interpolation == Interpolation::Linear)
+	{
+		return SampleLinear(*this, time, looping);
+	}
+	return SampleCubic(*this, time, looping);
+}
+
+template<typename T>
+bool Track<T>::is_valid() const
+{
+	return frames.size() > 1;
 }
 
 template struct Track<float>;

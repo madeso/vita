@@ -10,26 +10,16 @@
 template<typename T>
 struct Track
 {
-	std::vector<Frame<T>> mFrames;
-	Interpolation mInterpolation;
-
-	T SampleConstant(float time, bool looping);
-	T SampleLinear(float time, bool looping);
-	T SampleCubic(float time, bool looping);
-	T Hermite(float time, const T& point1, const T& slope1, const T& point2, const T& slope2);
-	int FrameIndex(float time, bool looping);
-	float AdjustTimeToFitTrack(float time, bool looping);
+	std::vector<Frame<T>> frames;
+	Interpolation interpolation;
 
 	Track(const std::vector<Frame<T>>& fra, Interpolation in);
 
-	void Resize(unsigned int size);
-	unsigned int Size();
-	Interpolation GetInterpolation();
-	void SetInterpolation(Interpolation interpolation);
-	float GetStartTime();
-	float GetEndTime();
-	T Sample(float time, bool looping);
-	Frame<T>& operator[](unsigned int index);
+	bool is_valid() const;
+
+	float get_start_time();
+	float get_end_time();
+	T get_sample(float time, bool looping);
 };
 
 typedef Track<float> ScalarTrack;

@@ -35,31 +35,31 @@ VectorTrack& TransformTrack::GetScaleTrack()
 
 bool TransformTrack::IsValid()
 {
-	return mPosition.Size() > 1 || mRotation.Size() > 1 || mScale.Size() > 1;
+	return mPosition.is_valid() || mRotation.is_valid() || mScale.is_valid();
 }
 
-float TransformTrack::GetStartTime()
+float TransformTrack::get_start_time()
 {
 	float result = 0.0f;
 	bool isSet = false;
 
-	if (mPosition.Size() > 1)
+	if (mPosition.is_valid())
 	{
-		result = mPosition.GetStartTime();
+		result = mPosition.get_start_time();
 		isSet = true;
 	}
-	if (mRotation.Size() > 1)
+	if (mRotation.is_valid())
 	{
-		float rotationStart = mRotation.GetStartTime();
+		float rotationStart = mRotation.get_start_time();
 		if (rotationStart < result || ! isSet)
 		{
 			result = rotationStart;
 			isSet = true;
 		}
 	}
-	if (mScale.Size() > 1)
+	if (mScale.is_valid())
 	{
-		float scaleStart = mScale.GetStartTime();
+		float scaleStart = mScale.get_start_time();
 		if (scaleStart < result || ! isSet)
 		{
 			result = scaleStart;
@@ -70,28 +70,28 @@ float TransformTrack::GetStartTime()
 	return result;
 }
 
-float TransformTrack::GetEndTime()
+float TransformTrack::get_end_time()
 {
 	float result = 0.0f;
 	bool isSet = false;
 
-	if (mPosition.Size() > 1)
+	if (mPosition.is_valid())
 	{
-		result = mPosition.GetEndTime();
+		result = mPosition.get_end_time();
 		isSet = true;
 	}
-	if (mRotation.Size() > 1)
+	if (mRotation.is_valid())
 	{
-		float rotationEnd = mRotation.GetEndTime();
+		float rotationEnd = mRotation.get_end_time();
 		if (rotationEnd > result || ! isSet)
 		{
 			result = rotationEnd;
 			isSet = true;
 		}
 	}
-	if (mScale.Size() > 1)
+	if (mScale.is_valid())
 	{
-		float scaleEnd = mScale.GetEndTime();
+		float scaleEnd = mScale.get_end_time();
 		if (scaleEnd > result || ! isSet)
 		{
 			result = scaleEnd;
@@ -102,20 +102,20 @@ float TransformTrack::GetEndTime()
 	return result;
 }
 
-Transform TransformTrack::Sample(const Transform& ref, float time, bool looping)
+Transform TransformTrack::get_sample(const Transform& ref, float time, bool looping)
 {
 	Transform result = ref;	 // Assign default values
-	if (mPosition.Size() > 1)
+	if (mPosition.is_valid())
 	{  // Only assign if animated
-		result.position = mPosition.Sample(time, looping);
+		result.position = mPosition.get_sample(time, looping);
 	}
-	if (mRotation.Size() > 1)
+	if (mRotation.is_valid())
 	{  // Only assign if animated
-		result.rotation = mRotation.Sample(time, looping);
+		result.rotation = mRotation.get_sample(time, looping);
 	}
-	if (mScale.Size() > 1)
+	if (mScale.is_valid())
 	{  // Only assign if animated
-		result.scale = mScale.Sample(time, looping);
+		result.scale = mScale.get_sample(time, looping);
 	}
 	return result;
 }

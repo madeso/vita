@@ -16,8 +16,8 @@ struct TransformTrack
 	VectorTrack& GetPositionTrack();
 	QuaternionTrack& GetRotationTrack();
 	VectorTrack& GetScaleTrack();
-	float GetStartTime();
-	float GetEndTime();
+	float get_start_time();
+	float get_end_time();
 	bool IsValid();
-	Transform Sample(const Transform& ref, float time, bool looping);
+	Transform get_sample(const Transform& ref, float time, bool looping);
 };

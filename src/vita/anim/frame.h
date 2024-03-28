@@ -6,18 +6,18 @@
 template<typename T>
 struct Frame
 {
-	float mTime;
-	T mIn;
-	T mOut;
-	T mValue;
+	float time;
+	T in;
+	T out;
+	T value;
 
 	Frame() = default;
 
 	Frame(float t, const T& i, const T& o, const T& v)
-		: mTime(t)
-		, mIn(i)
-		, mOut(o)
-		, mValue(v)
+		: time(t)
+		, in(i)
+		, out(o)
+		, value(v)
 	{
 	}
 };

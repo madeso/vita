@@ -22,42 +22,12 @@ struct Sample : public App
 		return MakeFrame(time, 0.0f, value, 0.0f);
 	}
 
-	VectorFrame MakeFrame(float time, const vec3& value)
-	{
-		return MakeFrame(time, vec3(), value, vec3());
-	}
-
-	QuaternionFrame MakeFrame(float time, const quat& value)
-	{
-		return MakeFrame(time, quat(0, 0, 0, 0), value, quat(0, 0, 0, 0));
-	}
-
 	ScalarFrame MakeFrame(float time, float in, float value, float out)
 	{
 		return {time, in, out, value};
 	}
 
-	VectorFrame MakeFrame(float time, const vec3& in, const vec3& value, const vec3& out)
-	{
-		return {time, in, out, value};
-	}
-
-	QuaternionFrame MakeFrame(float time, const quat& in, const quat& out, const quat& value)
-	{
-		return {time, in, out, get_normalized(value)};
-	}
-
 	ScalarTrack MakeScalarTrack(Interpolation interp, const std::vector<ScalarFrame>& frames)
-	{
-		return {frames, interp};
-	}
-
-	VectorTrack MakeVectorTrack(Interpolation interp, const std::vector<VectorFrame>& frames)
-	{
-		return {frames, interp};
-	}
-
-	QuaternionTrack MakeQuaternionTrack(Interpolation interp, std::vector<QuaternionFrame> frames)
 	{
 		return {frames, interp};
 	}
@@ -87,11 +57,11 @@ struct Sample : public App
 		mScalarTracksLooping.push_back(false);
 
 		ScalarTrack stepTrack{{}, Interpolation::Constant};
-		stepTrack.Resize(11);
-		for (unsigned int i = 0; i < 11; ++i)
+		stepTrack.frames.resize(11);
+		for (std::size_t i = 0; i < 11; ++i)
 		{
 			float time = static_cast<float>(i) / 10.0f * 0.5f + 0.25f;
-			stepTrack[i] = MakeFrame(time, (i % 2 == 0.0f) ? 0.0f : 1.0f);
+			stepTrack.frames[i] = MakeFrame(time, (i % 2 == 0.0f) ? 0.0f : 1.0f);
 		}
 		mScalarTracks.push_back(stepTrack);
 		mScalarTracks.push_back(stepTrack);
@@ -175,8 +145,8 @@ struct Sample : public App
 				float thisX = left + thisJNorm * xRange;
 				float nextX = left + nextJNorm * xRange;
 
-				float thisY = mScalarTracks[i].Sample(thisJNorm, mScalarTracksLooping[i]);
-				float nextY = mScalarTracks[i].Sample(nextJNorm, mScalarTracksLooping[i]);
+				float thisY = mScalarTracks[i].get_sample(thisJNorm, mScalarTracksLooping[i]);
+				float nextY = mScalarTracks[i].get_sample(nextJNorm, mScalarTracksLooping[i]);
 
 				thisY = yPosition + thisY * height;
 				nextY = yPosition + nextY * height;
@@ -185,12 +155,13 @@ struct Sample : public App
 				mScalarTrackLines->Push(vec3(nextX, nextY, 0.1f));
 			}
 
-			unsigned int numFrames = mScalarTracks[i].Size();
+			const auto numFrames = static_cast<unsigned int>(mScalarTracks[i].frames.size());
 			for (unsigned int j = 0; j < numFrames; ++j)
 			{
-				float thisTime = mScalarTracks[i][j].mTime;
-				float thisY = yPosition
-							+ mScalarTracks[i].Sample(thisTime, mScalarTracksLooping[i]) * height;
+				float thisTime = mScalarTracks[i].frames[j].time;
+				float thisY
+					= yPosition
+					+ mScalarTracks[i].get_sample(thisTime, mScalarTracksLooping[i]) * height;
 				float thisX = left + thisTime * xRange;
 				mHandlePoints->Push(vec3(thisX, thisY, 0.9f));
 
@@ -198,7 +169,7 @@ struct Sample : public App
 				{
 					float prevY
 						= yPosition
-						+ mScalarTracks[i].Sample(thisTime - 0.0005f, mScalarTracksLooping[i])
+						+ mScalarTracks[i].get_sample(thisTime - 0.0005f, mScalarTracksLooping[i])
 							  * height;
 					float prevX = left + (thisTime - 0.0005f) * xRange;
 
@@ -210,12 +181,11 @@ struct Sample : public App
 					mHandleLines->Push(handleVec);
 				}
 
-				if (j < numFrames - 1
-					&& mScalarTracks[i].GetInterpolation() != Interpolation::Constant)
+				if (j < numFrames - 1 && mScalarTracks[i].interpolation != Interpolation::Constant)
 				{
 					float nextY
 						= yPosition
-						+ mScalarTracks[i].Sample(thisTime + 0.0005f, mScalarTracksLooping[i])
+						+ mScalarTracks[i].get_sample(thisTime + 0.0005f, mScalarTracksLooping[i])
 							  * height;
 					float nextX = left + (thisTime + 0.0005f) * xRange;
 
