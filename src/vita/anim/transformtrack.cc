@@ -1,41 +1,41 @@
 #include "vita/anim/transformtrack.h"
 
 TransformTrack::TransformTrack()
-	: mPosition{{}, Interpolation::Linear}
-	, mRotation{{}, Interpolation::Linear}
-	, mScale{{}, Interpolation::Linear}
+	: position{{}, Interpolation::Linear}
+	, rotation{{}, Interpolation::Linear}
+	, scale{{}, Interpolation::Linear}
 {
-	mId = 0;
+	id = 0;
 }
 
 unsigned int TransformTrack::GetId()
 {
-	return mId;
+	return id;
 }
 
-void TransformTrack::SetId(unsigned int id)
+void TransformTrack::SetId(unsigned int nid)
 {
-	mId = id;
+	id = nid;
 }
 
 VectorTrack& TransformTrack::GetPositionTrack()
 {
-	return mPosition;
+	return position;
 }
 
 QuaternionTrack& TransformTrack::GetRotationTrack()
 {
-	return mRotation;
+	return rotation;
 }
 
 VectorTrack& TransformTrack::GetScaleTrack()
 {
-	return mScale;
+	return scale;
 }
 
 bool TransformTrack::IsValid()
 {
-	return mPosition.is_valid() || mRotation.is_valid() || mScale.is_valid();
+	return position.is_valid() || rotation.is_valid() || scale.is_valid();
 }
 
 float TransformTrack::get_start_time()
@@ -43,23 +43,23 @@ float TransformTrack::get_start_time()
 	float result = 0.0f;
 	bool isSet = false;
 
-	if (mPosition.is_valid())
+	if (position.is_valid())
 	{
-		result = mPosition.get_start_time();
+		result = position.get_start_time();
 		isSet = true;
 	}
-	if (mRotation.is_valid())
+	if (rotation.is_valid())
 	{
-		float rotationStart = mRotation.get_start_time();
+		float rotationStart = rotation.get_start_time();
 		if (rotationStart < result || ! isSet)
 		{
 			result = rotationStart;
 			isSet = true;
 		}
 	}
-	if (mScale.is_valid())
+	if (scale.is_valid())
 	{
-		float scaleStart = mScale.get_start_time();
+		float scaleStart = scale.get_start_time();
 		if (scaleStart < result || ! isSet)
 		{
 			result = scaleStart;
@@ -75,23 +75,23 @@ float TransformTrack::get_end_time()
 	float result = 0.0f;
 	bool isSet = false;
 
-	if (mPosition.is_valid())
+	if (position.is_valid())
 	{
-		result = mPosition.get_end_time();
+		result = position.get_end_time();
 		isSet = true;
 	}
-	if (mRotation.is_valid())
+	if (rotation.is_valid())
 	{
-		float rotationEnd = mRotation.get_end_time();
+		float rotationEnd = rotation.get_end_time();
 		if (rotationEnd > result || ! isSet)
 		{
 			result = rotationEnd;
 			isSet = true;
 		}
 	}
-	if (mScale.is_valid())
+	if (scale.is_valid())
 	{
-		float scaleEnd = mScale.get_end_time();
+		float scaleEnd = scale.get_end_time();
 		if (scaleEnd > result || ! isSet)
 		{
 			result = scaleEnd;
@@ -104,18 +104,9 @@ float TransformTrack::get_end_time()
 
 Transform TransformTrack::get_sample(const Transform& ref, float time, bool looping)
 {
-	Transform result = ref;	 // Assign default values
-	if (mPosition.is_valid())
-	{  // Only assign if animated
-		result.position = mPosition.get_sample(time, looping);
-	}
-	if (mRotation.is_valid())
-	{  // Only assign if animated
-		result.rotation = mRotation.get_sample(time, looping);
-	}
-	if (mScale.is_valid())
-	{  // Only assign if animated
-		result.scale = mScale.get_sample(time, looping);
-	}
-	return result;
+	return {
+		position.is_valid() ? position.get_sample(time, looping) : ref.position,
+		rotation.is_valid() ? rotation.get_sample(time, looping) : ref.rotation,
+		scale.is_valid() ? scale.get_sample(time, looping) : ref.scale
+	};
 }

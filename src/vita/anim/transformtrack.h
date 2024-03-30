@@ -5,10 +5,11 @@
 
 struct TransformTrack
 {
-	unsigned int mId;
-	VectorTrack mPosition;
-	QuaternionTrack mRotation;
-	VectorTrack mScale;
+	unsigned int id;
+
+	VectorTrack position;
+	QuaternionTrack rotation;
+	VectorTrack scale;
 
 	TransformTrack();
 	unsigned int GetId();
