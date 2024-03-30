@@ -48,10 +48,10 @@ float get_length(const quat& q);
 quat get_normalized(const quat& q);
 quat get_conjugate(const quat& q);
 quat get_inverse(const quat& q);
-quat get_mixed(const quat& from, const quat& to, float t);
 
 void normalize(quat& q);
 
+quat lerp(const quat& from, const quat& to, float t);
 float dot(const quat& a, const quat& b);
 quat nlerp(const quat& from, const quat& to, float t);
 quat slerp(const quat& start, const quat& end, float t);

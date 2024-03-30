@@ -204,14 +204,14 @@ vec3 operator*(const quat& q, const vec3& v)
 		 + cross(q.vector(), v) * 2.0f * q.scalar();
 }
 
-quat get_mixed(const quat& from, const quat& to, float t)
+quat lerp(const quat& from, const quat& to, float t)
 {
 	return from * (1.0f - t) + to * t;
 }
 
 quat nlerp(const quat& from, const quat& to, float t)
 {
-	return get_normalized(from + (to - from) * t);
+	return get_normalized(lerp(from, to, t));
 }
 
 quat operator^(const quat& q, float f)
