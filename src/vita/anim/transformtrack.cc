@@ -1,105 +1,70 @@
 #include "vita/anim/transformtrack.h"
 
 TransformTrack::TransformTrack()
-	: position{{}, Interpolation::Linear}
+	: id(0)
+	, position{{}, Interpolation::Linear}
 	, rotation{{}, Interpolation::Linear}
 	, scale{{}, Interpolation::Linear}
 {
-	id = 0;
 }
 
-unsigned int TransformTrack::GetId()
-{
-	return id;
-}
-
-void TransformTrack::SetId(unsigned int nid)
-{
-	id = nid;
-}
-
-VectorTrack& TransformTrack::GetPositionTrack()
-{
-	return position;
-}
-
-QuaternionTrack& TransformTrack::GetRotationTrack()
-{
-	return rotation;
-}
-
-VectorTrack& TransformTrack::GetScaleTrack()
-{
-	return scale;
-}
-
-bool TransformTrack::IsValid()
+bool TransformTrack::is_valid()
 {
 	return position.is_valid() || rotation.is_valid() || scale.is_valid();
 }
 
+float min(const std::optional<float>& lhs, float rhs)
+{
+	return lhs ? std::min(*lhs, rhs) : rhs;
+}
+
+float max(const std::optional<float>& lhs, float rhs)
+{
+	return lhs ? std::max(*lhs, rhs) : rhs;
+}
+
 float TransformTrack::get_start_time()
 {
-	float result = 0.0f;
-	bool isSet = false;
+	std::optional<float> result = std::nullopt;
 
 	if (position.is_valid())
 	{
 		result = position.get_start_time();
-		isSet = true;
-	}
-	if (rotation.is_valid())
-	{
-		float rotationStart = rotation.get_start_time();
-		if (rotationStart < result || ! isSet)
-		{
-			result = rotationStart;
-			isSet = true;
-		}
-	}
-	if (scale.is_valid())
-	{
-		float scaleStart = scale.get_start_time();
-		if (scaleStart < result || ! isSet)
-		{
-			result = scaleStart;
-			isSet = true;
-		}
 	}
 
-	return result;
+	if (rotation.is_valid())
+	{
+		result = min(result, rotation.get_start_time());
+	}
+
+	if (scale.is_valid())
+	{
+		result = min(result, scale.get_start_time());
+	}
+
+	return result.value_or(0.0f);
 }
 
 float TransformTrack::get_end_time()
 {
-	float result = 0.0f;
-	bool isSet = false;
+	std::optional<float> result = std::nullopt;
 
 	if (position.is_valid())
 	{
 		result = position.get_end_time();
-		isSet = true;
-	}
-	if (rotation.is_valid())
-	{
-		float rotationEnd = rotation.get_end_time();
-		if (rotationEnd > result || ! isSet)
-		{
-			result = rotationEnd;
-			isSet = true;
-		}
-	}
-	if (scale.is_valid())
-	{
-		float scaleEnd = scale.get_end_time();
-		if (scaleEnd > result || ! isSet)
-		{
-			result = scaleEnd;
-			isSet = true;
-		}
 	}
 
-	return result;
+	if (rotation.is_valid())
+	{
+		result = max(result, rotation.get_end_time());
+	}
+
+	if (scale.is_valid())
+	{
+		result = max(result, scale.get_end_time());
+	}
+
+	return result.value_or(0.0f);
 }
 
 Transform TransformTrack::get_sample(const Transform& ref, float time, bool looping)

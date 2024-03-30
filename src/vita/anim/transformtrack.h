@@ -12,13 +12,11 @@ struct TransformTrack
 	VectorTrack scale;
 
 	TransformTrack();
-	unsigned int GetId();
-	void SetId(unsigned int id);
-	VectorTrack& GetPositionTrack();
-	QuaternionTrack& GetRotationTrack();
-	VectorTrack& GetScaleTrack();
+
 	float get_start_time();
 	float get_end_time();
-	bool IsValid();
+
+	bool is_valid();
+
 	Transform get_sample(const Transform& ref, float time, bool looping);
 };
