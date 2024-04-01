@@ -72,18 +72,18 @@ T calc_hermite_interpolation(float t, const T& p1, const T& s1, const T& ap2, co
 }
 
 template<typename T>
-int FrameIndex(const Track<T>& track, float time, bool looping)
+int find_frame_index(const Track<T>& track, float time, bool looping)
 {
 	if (track.is_valid() == false)
 	{
 		return -1;
 	}
 
-	const auto size = track.frames.size();
+	const auto number_of_frames = track.frames.size();
 	if (looping)
 	{
 		const auto start_time = track.frames[0].time;
-		const auto end_time = track.frames[size - 1].time;
+		const auto end_time = track.frames[number_of_frames - 1].time;
 
 		time = std::fmod(time - start_time, end_time - start_time);
 		if (time < 0.0f)
@@ -98,19 +98,20 @@ int FrameIndex(const Track<T>& track, float time, bool looping)
 		{
 			return 0;
 		}
-		if (time >= track.frames[size - 2].time)
+		if (time >= track.frames[number_of_frames - 2].time)
 		{
-			return static_cast<int>(size) - 2;
+			return static_cast<int>(number_of_frames) - 2;
 		}
 	}
 
-	for (int i = static_cast<int>(size) - 1; i >= 0; --i)
+	for (int i = static_cast<int>(number_of_frames) - 1; i >= 0; --i)
 	{
 		if (time >= track.frames[static_cast<unsigned int>(i)].time)
 		{
 			return i;
 		}
 	}
+
 	// Invalid code, we should not reach here!
 	return -1;
 }
@@ -123,42 +124,44 @@ float adjust_time_to_fit_track(const Track<T>& track, float time, bool looping)
 		return 0.0f;
 	}
 
-	unsigned int size = static_cast<unsigned int>(track.frames.size());
-	float start_time = track.frames[0].time;
-	float end_time = track.frames[size - 1].time;
-	float duration = end_time - start_time;
+	const auto number_of_frames = static_cast<unsigned int>(track.frames.size());
+	const auto start_time = track.frames[0].time;
+	const auto end_time = track.frames[number_of_frames - 1].time;
+	const auto duration = end_time - start_time;
 	if (duration <= 0.0f)
 	{
 		return 0.0f;
 	}
 	if (looping)
 	{
-		time = std::fmod(time - start_time, end_time - start_time);
-		if (time < 0.0f)
+		auto ret = std::fmod(time - start_time, duration);
+		if (ret < 0.0f)
 		{
-			time += end_time - start_time;
+			ret += duration;
 		}
-		time = time + start_time;
+		return ret + start_time;
 	}
 	else
 	{
-		if (time <= track.frames[0].time)
+		if (time <= start_time)
 		{
-			time = start_time;
+			return start_time;
 		}
-		if (time >= track.frames[size - 1].time)
+		else if (time >= end_time)
 		{
-			time = end_time;
+			return end_time;
+		}
+		else
+		{
+			return time;
 		}
 	}
-
-	return time;
 }
 
 template<typename T>
 T get_sample_constant(const Track<T>& track, float time, bool looping)
 {
-	int frame = FrameIndex(track, time, looping);
+	int frame = find_frame_index(track, time, looping);
 	if (frame < 0 || frame >= static_cast<int>(track.frames.size()))
 	{
 		return T();
@@ -170,7 +173,7 @@ T get_sample_constant(const Track<T>& track, float time, bool looping)
 template<typename T>
 T get_sample_linear(const Track<T>& track, float time, bool looping)
 {
-	const auto this_frame_index = FrameIndex(track, time, looping);
+	const auto this_frame_index = find_frame_index(track, time, looping);
 	if (this_frame_index < 0 || this_frame_index >= static_cast<int>(track.frames.size() - 1))
 	{
 		return T();
@@ -196,7 +199,7 @@ T get_sample_linear(const Track<T>& track, float time, bool looping)
 template<typename T>
 T get_sample_cubic(const Track<T>& track, float time, bool looping)
 {
-	const auto this_frame_index = FrameIndex(track, time, looping);
+	const auto this_frame_index = find_frame_index(track, time, looping);
 	if (this_frame_index < 0 || this_frame_index >= static_cast<int>(track.frames.size() - 1))
 	{
 		return T();
