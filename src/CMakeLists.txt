@@ -100,6 +100,7 @@ set(src_test
     vita/main.test.cc
 
     vita/anim/mat4.test.cc
+    vita/anim/track.test.cc
 )
 add_executable(test
     ${src_test}

@@ -262,6 +262,19 @@ bool Track<T>::is_valid() const
 	return frames.size() > 1;
 }
 
+namespace for_testing
+{
+int find_frame_index_scalar(const ScalarTrack& track, float time, bool looping)
+{
+	return find_frame_index(track, time, looping);
+}
+
+float adjust_time_to_fit_track_scalar(const ScalarTrack& track, float time, bool looping)
+{
+	return adjust_time_to_fit_track(track, time, looping);
+}
+}  //  namespace for_testing
+
 template struct Track<float>;
 template struct Track<vec3>;
 template struct Track<quat>;

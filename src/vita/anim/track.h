@@ -25,3 +25,10 @@ struct Track
 typedef Track<float> ScalarTrack;
 typedef Track<vec3> VectorTrack;
 typedef Track<quat> QuaternionTrack;
+
+// hackily exposed for tests
+namespace for_testing
+{
+int find_frame_index_scalar(const ScalarTrack& track, float time, bool looping);
+float adjust_time_to_fit_track_scalar(const ScalarTrack& track, float time, bool looping);
+}  //  namespace for_testing
