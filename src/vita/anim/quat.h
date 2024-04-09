@@ -1,5 +1,7 @@
 #pragma once
 
+#include <cassert>
+
 #include "vita/anim/vec3.h"
 #include "vita/anim/mat4.h"
 
@@ -13,7 +15,20 @@ struct quat
 	float y;
 	float z;
 	float w;
+
 	// float v[4];
+
+	float& operator[](std::size_t i)
+	{
+		switch (i)
+		{
+		case 0: return x;
+		case 1: return y;
+		case 2: return z;
+		case 3: return w;
+		default: assert(false); return x;
+		}
+	}
 
 	quat();
 	quat(float _x, float _y, float _z, float _w);

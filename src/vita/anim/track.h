@@ -17,9 +17,9 @@ struct Track
 
 	bool is_valid() const;
 
-	float get_start_time();
-	float get_end_time();
-	T get_sample(float time, bool looping);
+	float get_start_time() const;
+	float get_end_time() const;
+	T get_sample(float time, bool looping) const;
 };
 
 typedef Track<float> ScalarTrack;

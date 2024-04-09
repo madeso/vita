@@ -79,6 +79,19 @@ add_library(external::glm ALIAS external_glm)
 
 
 ###################################################################################################
+# cgltf
+add_library(external_cgltf STATIC
+    cgltf/cgltf.c
+    cgltf/cgltf.h
+)
+target_include_directories(external_cgltf SYSTEM
+    PUBLIC
+        cgltf
+)
+add_library(external::cgltf ALIAS external_cgltf)
+
+
+###################################################################################################
 # dear_imgui
 set(dear_imgui_src
     imgui/imconfig.h

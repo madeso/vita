@@ -5,7 +5,7 @@
 
 struct TransformTrack
 {
-	unsigned int id;
+	std::size_t id;
 
 	VectorTrack position;
 	QuaternionTrack rotation;
@@ -13,10 +13,10 @@ struct TransformTrack
 
 	TransformTrack();
 
-	float get_start_time();
-	float get_end_time();
+	float get_start_time() const;
+	float get_end_time() const;
 
-	bool is_valid();
+	bool is_valid() const;
 
-	Transform get_sample(const Transform& ref, float time, bool looping);
+	Transform get_sample(const Transform& ref, float time, bool looping) const;
 };

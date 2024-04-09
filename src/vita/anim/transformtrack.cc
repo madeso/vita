@@ -8,7 +8,7 @@ TransformTrack::TransformTrack()
 {
 }
 
-bool TransformTrack::is_valid()
+bool TransformTrack::is_valid() const
 {
 	return position.is_valid() || rotation.is_valid() || scale.is_valid();
 }
@@ -23,7 +23,7 @@ float max(const std::optional<float>& lhs, float rhs)
 	return lhs ? std::max(*lhs, rhs) : rhs;
 }
 
-float TransformTrack::get_start_time()
+float TransformTrack::get_start_time() const
 {
 	std::optional<float> result = std::nullopt;
 
@@ -45,7 +45,7 @@ float TransformTrack::get_start_time()
 	return result.value_or(0.0f);
 }
 
-float TransformTrack::get_end_time()
+float TransformTrack::get_end_time() const
 {
 	std::optional<float> result = std::nullopt;
 
@@ -67,7 +67,7 @@ float TransformTrack::get_end_time()
 	return result.value_or(0.0f);
 }
 
-Transform TransformTrack::get_sample(const Transform& ref, float time, bool looping)
+Transform TransformTrack::get_sample(const Transform& ref, float time, bool looping) const
 {
 	return {
 		position.is_valid() ? position.get_sample(time, looping) : ref.position,

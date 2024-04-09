@@ -34,6 +34,12 @@ set(src_base
     vita/anim/frame.h
     vita/anim/interpolation.h
     vita/anim/debugdraw.cc vita/anim/debugdraw.h
+
+    # chapter 09
+    vita/anim/pose.cc vita/anim/pose.h
+    vita/anim/clip.cc vita/anim/clip.h
+    vita/anim/gltfloader.cc vita/anim/gltfloader.h
+
     
     vita/vita.cc vita/vita.h
     vita/opengl_utils.cc vita/opengl_utils.h
@@ -66,6 +72,7 @@ target_link_libraries(vita
         external::glm
         external::glad
         external::imgui
+        external::cgltf
     PRIVATE
         embed::embed
         vita::project_options

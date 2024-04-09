@@ -7,6 +7,8 @@
 #include "vita/anim/vec3.h"
 #include "vita/anim/mat4.h"
 
+struct Pose;
+
 enum class DebugDrawMode
 {
 	Lines,
@@ -38,6 +40,8 @@ struct DebugDraw
 	void Resize(unsigned int newSize);
 	vec3& operator[](unsigned int index);
 	void Push(const vec3& v);
+
+	void FromPose(const Pose& pose);
 
 	void UpdateOpenGLBuffers();
 	void Draw(DebugDrawMode mode, const vec3& color, const mat4& mvp);

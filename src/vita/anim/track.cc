@@ -234,19 +234,19 @@ Track<T>::Track(const std::vector<Frame<T>>& fra, Interpolation in)
 }
 
 template<typename T>
-float Track<T>::get_start_time()
+float Track<T>::get_start_time() const
 {
 	return frames[0].time;
 }
 
 template<typename T>
-float Track<T>::get_end_time()
+float Track<T>::get_end_time() const
 {
 	return frames[frames.size() - 1].time;
 }
 
 template<typename T>
-T Track<T>::get_sample(float time, bool looping)
+T Track<T>::get_sample(float time, bool looping) const
 {
 	switch (interpolation)
 	{

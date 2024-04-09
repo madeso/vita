@@ -1,5 +1,7 @@
 #pragma once
 
+#include <cassert>
+
 constexpr float VEC3_EPSILON = 0.000001f;
 
 #pragma pack(push, 1)
@@ -12,7 +14,16 @@ struct vec3
 
 	const float* data_ptr() const;
 
-	// float v[3];
+	float& operator[](std::size_t i)
+	{
+		switch (i)
+		{
+		case 0: return x;
+		case 1: return y;
+		case 2: return z;
+		default: assert(false); return x;
+		}
+	}
 
 	vec3();
 	vec3(float ax, float ay, float az);
