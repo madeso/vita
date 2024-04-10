@@ -8,7 +8,14 @@
 #include "vita/anim/pose.h"
 #include "vita/anim/clip.h"
 
-cgltf_data* LoadGLTFFile(const char* path);
+struct GltfFile
+{
+	std::string name;
+	const void* data;
+	std::size_t size;
+};
+
+cgltf_data* LoadGLTFFile(const GltfFile& file);
 void FreeGLTFFile(cgltf_data* handle);
 
 Pose LoadRestPose(cgltf_data* data);

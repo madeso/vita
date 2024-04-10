@@ -5,6 +5,7 @@
 #include "vita/anim/debugdraw.h"
 #include "vita/anim/pose.h"
 #include "vita/anim/clip.h"
+#include "vita/assets.h"
 
 struct Sample : App
 {
@@ -29,7 +30,7 @@ struct Sample : App
 
 Sample::Sample()
 {
-	cgltf_data* gltf = LoadGLTFFile("Assets/Woman.gltf");
+	cgltf_data* gltf = LoadGLTFFile(assets::woman_gltf());
 	mRestPose = LoadRestPose(gltf);
 	mClips = LoadAnimationClips(gltf);
 	FreeGLTFFile(gltf);

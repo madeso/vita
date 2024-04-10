@@ -4,6 +4,7 @@ embed(src_assets
         vita/assets/static.vert
     AS_BINARY
         vita/assets/uv.png
+        vita/assets/woman.gltf
 )
 
 set(src_render

@@ -117,29 +117,31 @@ void TrackFromChannel(Track<T>& inOutTrack, const cgltf_animation_channel& inCha
 }
 }  //  namespace GLTFHelpers
 
-cgltf_data* LoadGLTFFile(const char* path)
+cgltf_data* LoadGLTFFile(const GltfFile& path)
 {
 	cgltf_options options;
 	std::memset(&options, 0, sizeof(cgltf_options));
 	cgltf_data* data = NULL;
-	cgltf_result result = cgltf_parse_file(&options, path, &data);
+
+	// cgltf_result result = cgltf_parse_file(&options, path, &data);
+	cgltf_result result = cgltf_parse(&options, path.data, path.size, &data);
 	if (result != cgltf_result_success)
 	{
-		std::cerr << "Could not load input file: " << path << "\n";
+		std::cerr << "Could not load input file: " << path.name << "\n";
 		return nullptr;
 	}
-	result = cgltf_load_buffers(&options, data, path);
+	result = cgltf_load_buffers(&options, data, path.name.c_str());
 	if (result != cgltf_result_success)
 	{
 		cgltf_free(data);
-		std::cerr << "Could not load buffers for: " << path << "\n";
+		std::cerr << "Could not load buffers for: " << path.name << "\n";
 		return nullptr;
 	}
 	result = cgltf_validate(data);
 	if (result != cgltf_result_success)
 	{
 		cgltf_free(data);
-		std::cerr << "Invalid gltf file: " << path << "\n";
+		std::cerr << "GLTF file validation FAILED: " << path.name << "\n";
 		return nullptr;
 	}
 	return data;
