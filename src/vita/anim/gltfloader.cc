@@ -7,7 +7,7 @@
 
 namespace GLTFHelpers
 {
-Transform GetLocalTransform(cgltf_node& node)
+Transform local_transform_from_node(cgltf_node& node)
 {
 	Transform result;
 
@@ -36,7 +36,7 @@ Transform GetLocalTransform(cgltf_node& node)
 	return result;
 }
 
-std::optional<std::size_t> GetNodeIndex(
+std::optional<std::size_t> find_node_index(
 	cgltf_node* target, cgltf_node* allNodes, std::size_t numNodes
 )
 {
@@ -54,47 +54,58 @@ std::optional<std::size_t> GetNodeIndex(
 	return std::nullopt;
 }
 
-std::vector<float> GetScalarValues(std::size_t inComponentCount, const cgltf_accessor& inAccessor)
+std::vector<float> scalar_values_from_accessor(
+	std::size_t component_count, const cgltf_accessor& accessor
+)
 {
 	std::vector<float> outScalars;
-	outScalars.resize(inAccessor.count * inComponentCount);
+	outScalars.resize(accessor.count * component_count);
 
-	for (cgltf_size i = 0; i < inAccessor.count; ++i)
+	for (cgltf_size i = 0; i < accessor.count; ++i)
 	{
-		cgltf_accessor_read_float(
-			&inAccessor, i, &outScalars[i * inComponentCount], inComponentCount
-		);
+		cgltf_accessor_read_float(&accessor, i, &outScalars[i * component_count], component_count);
 	}
 	return outScalars;
 }
 
+Interpolation interpolation_from_gltf(cgltf_interpolation_type x)
+{
+	if (x == cgltf_interpolation_type_linear)
+	{
+		return Interpolation::Linear;
+	}
+	else if (x == cgltf_interpolation_type_cubic_spline)
+	{
+		return Interpolation::Cubic;
+	}
+	else
+	{
+		return Interpolation::Constant;
+	}
+}
+
 template<typename T, std::size_t N>
-void TrackFromChannel(Track<T>& inOutTrack, const cgltf_animation_channel& inChannel)
+Track<T> TrackFromChannel(const cgltf_animation_channel& inChannel)
 {
 	cgltf_animation_sampler& sampler = *inChannel.sampler;
 
-	Interpolation interpolation = Interpolation::Constant;
-	if (inChannel.sampler->interpolation == cgltf_interpolation_type_linear)
-	{
-		interpolation = Interpolation::Linear;
-	}
-	else if (inChannel.sampler->interpolation == cgltf_interpolation_type_cubic_spline)
-	{
-		interpolation = Interpolation::Cubic;
-	}
-	const auto isSamplerCubic = interpolation == Interpolation::Cubic;
-	inOutTrack.interpolation = interpolation;
 
-	const auto timelineFloats = GetScalarValues(1, *sampler.input);
-	const auto valueFloats = GetScalarValues(N, *sampler.output);
+	const auto timelineFloats = scalar_values_from_accessor(1, *sampler.input);
+	const auto valueFloats = scalar_values_from_accessor(N, *sampler.output);
 
 	const auto numFrames = sampler.input->count;
 	const auto numberOfValuesPerFrame = valueFloats.size() / timelineFloats.size();
-	inOutTrack.frames.resize(numFrames);
+
+	const auto interpolation = interpolation_from_gltf(sampler.interpolation);
+	const auto isSamplerCubic = interpolation == Interpolation::Cubic;
+
+	Track<T> ret{{}, interpolation};
+	ret.frames.resize(numFrames);
+
 	for (unsigned int i = 0; i < numFrames; ++i)
 	{
 		const auto baseIndex = i * numberOfValuesPerFrame;
-		auto& frame = inOutTrack.frames[i];
+		auto& frame = ret.frames[i];
 		std::size_t offset = 0;
 
 		frame.time = timelineFloats[i];
@@ -114,10 +125,12 @@ void TrackFromChannel(Track<T>& inOutTrack, const cgltf_animation_channel& inCha
 			frame.out[component] = isSamplerCubic ? valueFloats[baseIndex + offset++] : 0.0f;
 		}
 	}
+
+	return ret;
 }
 }  //  namespace GLTFHelpers
 
-cgltf_data* LoadGLTFFile(const GltfFile& path)
+cgltf_data* load_gltf_file(const GltfFile& path)
 {
 	cgltf_options options;
 	std::memset(&options, 0, sizeof(cgltf_options));
@@ -147,7 +160,7 @@ cgltf_data* LoadGLTFFile(const GltfFile& path)
 	return data;
 }
 
-void FreeGLTFFile(cgltf_data* data)
+void free_gltf_file(cgltf_data* data)
 {
 	if (data == nullptr)
 	{
@@ -159,7 +172,7 @@ void FreeGLTFFile(cgltf_data* data)
 	}
 }
 
-Pose LoadRestPose(cgltf_data* data)
+Pose get_rest_pose(cgltf_data* data)
 {
 	const auto boneCount = data->nodes_count;
 	Pose result(boneCount);
@@ -168,17 +181,17 @@ Pose LoadRestPose(cgltf_data* data)
 	{
 		cgltf_node* node = &(data->nodes[i]);
 
-		Transform transform = GLTFHelpers::GetLocalTransform(data->nodes[i]);
+		Transform transform = GLTFHelpers::local_transform_from_node(data->nodes[i]);
 		result.SetLocalTransform(i, transform);
 
-		const auto parent = GLTFHelpers::GetNodeIndex(node->parent, data->nodes, boneCount);
+		const auto parent = GLTFHelpers::find_node_index(node->parent, data->nodes, boneCount);
 		result.SetParent(i, parent);
 	}
 
 	return result;
 }
 
-std::vector<std::string> LoadJointNames(cgltf_data* data)
+std::vector<std::string> get_joint_names(cgltf_data* data)
 {
 	const auto boneCount = data->nodes_count;
 	std::vector<std::string> result(boneCount, "Not Set");
@@ -200,7 +213,7 @@ std::vector<std::string> LoadJointNames(cgltf_data* data)
 	return result;
 }
 
-std::vector<Clip> LoadAnimationClips(cgltf_data* data)
+std::vector<Clip> get_animation_clips(cgltf_data* data)
 {
 	const auto numClips = data->animations_count;
 	const auto numNodes = data->nodes_count;
@@ -217,7 +230,7 @@ std::vector<Clip> LoadAnimationClips(cgltf_data* data)
 		{
 			cgltf_animation_channel& channel = data->animations[i].channels[j];
 			cgltf_node* target = channel.target_node;
-			const auto nodeId = GLTFHelpers::GetNodeIndex(target, data->nodes, numNodes);
+			const auto nodeId = GLTFHelpers::find_node_index(target, data->nodes, numNodes);
 			if (! nodeId)
 			{
 				std::cerr << "Invalid node id\n";
@@ -226,18 +239,15 @@ std::vector<Clip> LoadAnimationClips(cgltf_data* data)
 
 			if (channel.target_path == cgltf_animation_path_type_translation)
 			{
-				auto& track = result[i][*nodeId].position;
-				GLTFHelpers::TrackFromChannel<vec3, 3>(track, channel);
+				result[i][*nodeId].position = GLTFHelpers::TrackFromChannel<vec3, 3>(channel);
 			}
 			else if (channel.target_path == cgltf_animation_path_type_scale)
 			{
-				auto& track = result[i][*nodeId].scale;
-				GLTFHelpers::TrackFromChannel<vec3, 3>(track, channel);
+				result[i][*nodeId].scale = GLTFHelpers::TrackFromChannel<vec3, 3>(channel);
 			}
 			else if (channel.target_path == cgltf_animation_path_type_rotation)
 			{
-				auto& track = result[i][*nodeId].rotation;
-				GLTFHelpers::TrackFromChannel<quat, 4>(track, channel);
+				result[i][*nodeId].rotation = GLTFHelpers::TrackFromChannel<quat, 4>(channel);
 			}
 		}
 		result[i].RecalculateDuration();

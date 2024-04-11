@@ -15,9 +15,9 @@ struct GltfFile
 	std::size_t size;
 };
 
-cgltf_data* LoadGLTFFile(const GltfFile& file);
-void FreeGLTFFile(cgltf_data* handle);
+cgltf_data* load_gltf_file(const GltfFile& file);
+void free_gltf_file(cgltf_data* handle);
 
-Pose LoadRestPose(cgltf_data* data);
-std::vector<std::string> LoadJointNames(cgltf_data* data);
-std::vector<Clip> LoadAnimationClips(cgltf_data* data);
+Pose get_rest_pose(cgltf_data* data);
+std::vector<std::string> get_joint_names(cgltf_data* data);
+std::vector<Clip> get_animation_clips(cgltf_data* data);

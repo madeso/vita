@@ -30,10 +30,10 @@ struct Sample : App
 
 Sample::Sample()
 {
-	cgltf_data* gltf = LoadGLTFFile(assets::woman_gltf());
-	mRestPose = LoadRestPose(gltf);
-	mClips = LoadAnimationClips(gltf);
-	FreeGLTFFile(gltf);
+	cgltf_data* gltf = load_gltf_file(assets::woman_gltf());
+	mRestPose = get_rest_pose(gltf);
+	mClips = get_animation_clips(gltf);
+	free_gltf_file(gltf);
 
 	mRestPoseVisual = new DebugDraw();
 	mRestPoseVisual->FromPose(mRestPose);
