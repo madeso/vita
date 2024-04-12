@@ -5,26 +5,15 @@
 
 #include "vita/anim/transform.h"
 
-struct Pose
+struct Joint
 {
-	std::vector<std::optional<std::size_t>> parents;
-	std::vector<Transform> joints;
-
-	Pose();
-	Pose(const Pose& p) = default;
-	Pose(std::size_t numJoints);
-	Pose& operator=(const Pose& p) = default;
-
-	void Resize(std::size_t size);
-	std::size_t Size() const;
-
-	Transform GetLocalTransform(std::size_t index) const;
-	void SetLocalTransform(std::size_t index, const Transform& transform);
-
-	Transform GetGlobalTransform(std::size_t index) const;
-	Transform operator[](std::size_t index) const;
-	void GetMatrixPalette(std::vector<mat4>& out);
-
-	std::optional<std::size_t> GetParent(std::size_t index) const;
-	void SetParent(std::size_t index, std::optional<std::size_t> parent);
+	std::optional<std::size_t> parent;
+	Transform local;
 };
+
+using Pose = std::vector<Joint>;
+
+Transform calc_global_transform(const Pose& pose, std::size_t index);
+
+/// this seems what we used to called a compile pose
+std::vector<mat4> calc_matrix_palette();

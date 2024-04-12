@@ -181,11 +181,8 @@ Pose get_rest_pose(cgltf_data* data)
 	{
 		cgltf_node* node = &(data->nodes[i]);
 
-		Transform transform = gltf_helpers::local_transform_from_node(data->nodes[i]);
-		result.SetLocalTransform(i, transform);
-
-		const auto parent = gltf_helpers::find_node_index(node->parent, data->nodes, boneCount);
-		result.SetParent(i, parent);
+		result[i].local = gltf_helpers::local_transform_from_node(data->nodes[i]);
+		result[i].parent = gltf_helpers::find_node_index(node->parent, data->nodes, boneCount);
 	}
 
 	return result;

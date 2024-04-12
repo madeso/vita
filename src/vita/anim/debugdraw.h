@@ -6,8 +6,7 @@
 #include "vita/anim/attribute.h"
 #include "vita/anim/vec3.h"
 #include "vita/anim/mat4.h"
-
-struct Pose;
+#include "vita/anim/pose.h"
 
 enum class DebugDrawMode
 {

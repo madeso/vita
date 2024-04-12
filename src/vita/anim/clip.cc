@@ -52,9 +52,8 @@ float Clip::Sample(Pose& outPose, float time) const
 	for (std::size_t i = 0; i < size; ++i)
 	{
 		const auto joint = tracks[i].id;
-		Transform local = outPose.GetLocalTransform(joint);
-		Transform animated = tracks[i].get_sample(local, time, is_looping);
-		outPose.SetLocalTransform(joint, animated);
+		const auto local = outPose[joint].local;
+		outPose[joint].local = tracks[i].get_sample(local, time, is_looping);
 	}
 	return time;
 }

@@ -1,6 +1,5 @@
 #include "vita/anim/debugdraw.h"
 
-#include "vita/anim/pose.h"
 #include "vita/anim/uniform.h"
 #include "vita/anim/draw.h"
 
@@ -80,10 +79,10 @@ void DebugDraw::UpdateOpenGLBuffers()
 void DebugDraw::FromPose(const Pose& pose)
 {
 	std::size_t requiredVerts = 0;
-	const auto numJoints = pose.Size();
+	const auto numJoints = pose.size();
 	for (unsigned int i = 0; i < numJoints; ++i)
 	{
-		if (! pose.GetParent(i))
+		if (! pose[i].parent)
 		{
 			continue;
 		}
@@ -94,14 +93,14 @@ void DebugDraw::FromPose(const Pose& pose)
 	mPoints.resize(requiredVerts);
 	for (std::size_t i = 0; i < numJoints; ++i)
 	{
-		const auto parent = pose.GetParent(i);
+		const auto parent = pose[i].parent;
 		if (! parent)
 		{
 			continue;
 		}
 
-		mPoints.push_back(pose.GetGlobalTransform(i).position);
-		mPoints.push_back(pose.GetGlobalTransform(*parent).position);
+		mPoints.push_back(calc_global_transform(pose, i).position);
+		mPoints.push_back(calc_global_transform(pose, *parent).position);
 	}
 }
 
