@@ -6,22 +6,25 @@
 #include "vita/anim/transformtrack.h"
 #include "vita/anim/pose.h"
 
+struct ClipDuration
+{
+	float start = 0.0f;
+	float end = 0.0f;
+};
+
 struct Clip
 {
-	std::vector<TransformTrack> mTracks;
-	std::string mName;
-	float mStartTime;
-	float mEndTime;
-	bool mLooping;
+	std::vector<TransformTrack> tracks;
+	std::string name;
+	ClipDuration duration;
+	bool is_looping;
 
 	Clip();
 
-	std::size_t GetIdAtIndex(std::size_t index) const;
-	void SetIdAtIndex(std::size_t index, std::size_t id);
-	std::size_t Size() const;
 	float Sample(Pose& outPose, float inTime) const;
 	TransformTrack& operator[](std::size_t index);
-	void RecalculateDuration();
 
 	float GetDuration() const;
 };
+
+ClipDuration duration_from_tracks(const std::vector<TransformTrack>& tracks);

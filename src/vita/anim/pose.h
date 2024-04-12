@@ -7,8 +7,8 @@
 
 struct Pose
 {
-	std::vector<std::optional<std::size_t>> mParents;
-	std::vector<Transform> mJoints;
+	std::vector<std::optional<std::size_t>> parents;
+	std::vector<Transform> joints;
 
 	Pose();
 	Pose(const Pose& p) = default;
@@ -27,7 +27,4 @@ struct Pose
 
 	std::optional<std::size_t> GetParent(std::size_t index) const;
 	void SetParent(std::size_t index, std::optional<std::size_t> parent);
-
-	// bool operator==(const Pose& other);
-	// bool operator!=(const Pose& other);
 };

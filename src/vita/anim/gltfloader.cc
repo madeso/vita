@@ -5,7 +5,7 @@
 
 #include "vita/anim/transform.h"
 
-namespace GLTFHelpers
+namespace gltf_helpers
 {
 Transform local_transform_from_node(cgltf_node& node)
 {
@@ -85,7 +85,7 @@ Interpolation interpolation_from_gltf(cgltf_interpolation_type x)
 }
 
 template<typename T, std::size_t N>
-Track<T> TrackFromChannel(const cgltf_animation_channel& inChannel)
+Track<T> track_from_channel(const cgltf_animation_channel& inChannel)
 {
 	cgltf_animation_sampler& sampler = *inChannel.sampler;
 
@@ -128,7 +128,7 @@ Track<T> TrackFromChannel(const cgltf_animation_channel& inChannel)
 
 	return ret;
 }
-}  //  namespace GLTFHelpers
+}  //  namespace gltf_helpers
 
 cgltf_data* load_gltf_file(const GltfFile& path)
 {
@@ -181,10 +181,10 @@ Pose get_rest_pose(cgltf_data* data)
 	{
 		cgltf_node* node = &(data->nodes[i]);
 
-		Transform transform = GLTFHelpers::local_transform_from_node(data->nodes[i]);
+		Transform transform = gltf_helpers::local_transform_from_node(data->nodes[i]);
 		result.SetLocalTransform(i, transform);
 
-		const auto parent = GLTFHelpers::find_node_index(node->parent, data->nodes, boneCount);
+		const auto parent = gltf_helpers::find_node_index(node->parent, data->nodes, boneCount);
 		result.SetParent(i, parent);
 	}
 
@@ -223,34 +223,38 @@ std::vector<Clip> get_animation_clips(cgltf_data* data)
 
 	for (std::size_t i = 0; i < numClips; ++i)
 	{
-		result[i].mName = data->animations[i].name;
+		auto& clip = result[i];
+
+		clip.name = data->animations[i].name;
 
 		const auto numChannels = data->animations[i].channels_count;
 		for (std::size_t j = 0; j < numChannels; ++j)
 		{
 			cgltf_animation_channel& channel = data->animations[i].channels[j];
 			cgltf_node* target = channel.target_node;
-			const auto nodeId = GLTFHelpers::find_node_index(target, data->nodes, numNodes);
+			const auto nodeId = gltf_helpers::find_node_index(target, data->nodes, numNodes);
 			if (! nodeId)
 			{
 				std::cerr << "Invalid node id\n";
 				continue;
 			}
 
+			auto& track = clip[*nodeId];
+
 			if (channel.target_path == cgltf_animation_path_type_translation)
 			{
-				result[i][*nodeId].position = GLTFHelpers::TrackFromChannel<vec3, 3>(channel);
+				track.position = gltf_helpers::track_from_channel<vec3, 3>(channel);
 			}
 			else if (channel.target_path == cgltf_animation_path_type_scale)
 			{
-				result[i][*nodeId].scale = GLTFHelpers::TrackFromChannel<vec3, 3>(channel);
+				track.scale = gltf_helpers::track_from_channel<vec3, 3>(channel);
 			}
 			else if (channel.target_path == cgltf_animation_path_type_rotation)
 			{
-				result[i][*nodeId].rotation = GLTFHelpers::TrackFromChannel<quat, 4>(channel);
+				track.rotation = gltf_helpers::track_from_channel<quat, 4>(channel);
 			}
 		}
-		result[i].RecalculateDuration();
+		clip.duration = duration_from_tracks(clip.tracks);
 	}
 
 	return result;

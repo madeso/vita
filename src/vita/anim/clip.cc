@@ -4,37 +4,37 @@
 
 Clip::Clip()
 {
-	mName = "No name given";
-	mStartTime = 0.0f;
-	mEndTime = 0.0f;
-	mLooping = true;
+	name = "No name given";
+	is_looping = true;
 }
 
 float AdjustTimeToFitRange(const Clip& self, float inTime)
 {
-	if (self.mLooping)
+	const auto& span = self.duration;
+
+	if (self.is_looping)
 	{
 		const auto duration = self.GetDuration();
 		if (duration <= 0)
 		{
 			return 0.0f;
 		}
-		inTime = std::fmod(inTime - self.mStartTime, duration);
+		inTime = std::fmod(inTime - span.start, duration);
 		if (inTime < 0.0f)
 		{
 			inTime += duration;
 		}
-		inTime = inTime + self.mStartTime;
+		inTime = inTime + span.start;
 	}
 	else
 	{
-		if (inTime < self.mStartTime)
+		if (inTime < span.start)
 		{
-			inTime = self.mStartTime;
+			inTime = span.start;
 		}
-		if (inTime > self.mEndTime)
+		if (inTime > span.end)
 		{
-			inTime = self.mEndTime;
+			inTime = span.end;
 		}
 	}
 	return inTime;
@@ -48,78 +48,65 @@ float Clip::Sample(Pose& outPose, float time) const
 	}
 	time = AdjustTimeToFitRange(*this, time);
 
-	const auto size = mTracks.size();
+	const auto size = tracks.size();
 	for (std::size_t i = 0; i < size; ++i)
 	{
-		const auto joint = mTracks[i].id;
+		const auto joint = tracks[i].id;
 		Transform local = outPose.GetLocalTransform(joint);
-		Transform animated = mTracks[i].get_sample(local, time, mLooping);
+		Transform animated = tracks[i].get_sample(local, time, is_looping);
 		outPose.SetLocalTransform(joint, animated);
 	}
 	return time;
 }
 
-void Clip::RecalculateDuration()
+ClipDuration duration_from_tracks(const std::vector<TransformTrack>& tracks)
 {
-	mStartTime = 0.0f;
-	mEndTime = 0.0f;
+	float start_time = 0.0f;
+	float end_time = 0.0f;
 	bool startSet = false;
 	bool endSet = false;
-	const auto tracksSize = mTracks.size();
+	const auto tracksSize = tracks.size();
 	for (std::size_t i = 0; i < tracksSize; ++i)
 	{
-		if (mTracks[i].is_valid())
+		if (tracks[i].is_valid())
 		{
-			float trackStartTime = mTracks[i].get_start_time();
-			float trackEndTime = mTracks[i].get_end_time();
+			float trackStartTime = tracks[i].get_start_time();
+			float trackEndTime = tracks[i].get_end_time();
 
-			if (trackStartTime < mStartTime || ! startSet)
+			if (trackStartTime < start_time || ! startSet)
 			{
-				mStartTime = trackStartTime;
+				start_time = trackStartTime;
 				startSet = true;
 			}
 
-			if (trackEndTime > mEndTime || ! endSet)
+			if (trackEndTime > end_time || ! endSet)
 			{
-				mEndTime = trackEndTime;
+				end_time = trackEndTime;
 				endSet = true;
 			}
 		}
 	}
+
+	return {start_time, end_time};
 }
 
 TransformTrack& Clip::operator[](std::size_t joint)
 {
-	const auto size = mTracks.size();
+	const auto size = tracks.size();
 	for (std::size_t i = 0; i < size; ++i)
 	{
-		if (mTracks[i].id == joint)
+		if (tracks[i].id == joint)
 		{
-			return mTracks[i];
+			return tracks[i];
 		}
 	}
 
-	mTracks.emplace_back();
-	mTracks[mTracks.size() - 1].id = joint;
-	return mTracks[mTracks.size() - 1];
-}
-
-std::size_t Clip::GetIdAtIndex(std::size_t index) const
-{
-	return mTracks[index].id;
-}
-
-void Clip::SetIdAtIndex(std::size_t index, std::size_t id)
-{
-	mTracks[index].id = id;
-}
-
-std::size_t Clip::Size() const
-{
-	return mTracks.size();
+	tracks.emplace_back();
+	tracks[tracks.size() - 1].id = joint;
+	return tracks[tracks.size() - 1];
 }
 
 float Clip::GetDuration() const
 {
-	return mEndTime - mStartTime;
+	return duration.end - duration.start;
 }

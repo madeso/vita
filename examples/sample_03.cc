@@ -50,7 +50,7 @@ Sample::Sample()
 	const auto numUIClips = mClips.size();
 	for (std::size_t i = 0; i < numUIClips; ++i)
 	{
-		if (mClips[i].mName == "Walking")
+		if (mClips[i].name == "Walking")
 		{
 			mCurrentClip = i;
 			break;

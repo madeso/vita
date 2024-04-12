@@ -13,32 +13,32 @@ Pose::Pose(std::size_t numJoints)
 
 void Pose::Resize(std::size_t size)
 {
-	mParents.resize(size);
-	mJoints.resize(size);
+	parents.resize(size);
+	joints.resize(size);
 }
 
 std::size_t Pose::Size() const
 {
-	return mJoints.size();
+	return joints.size();
 }
 
 Transform Pose::GetLocalTransform(std::size_t index) const
 {
-	return mJoints[index];
+	return joints[index];
 }
 
 void Pose::SetLocalTransform(std::size_t index, const Transform& transform)
 {
-	mJoints[index] = transform;
+	joints[index] = transform;
 }
 
 Transform Pose::GetGlobalTransform(std::size_t index) const
 {
-	auto result = mJoints[index];
+	auto result = joints[index];
 
-	for (auto parent = mParents[index]; parent; parent = mParents[*parent])
+	for (auto parent = parents[index]; parent; parent = parents[*parent])
 	{
-		result = get_combined(mJoints[*parent], result);
+		result = get_combined(joints[*parent], result);
 	}
 
 	return result;
@@ -66,49 +66,10 @@ void Pose::GetMatrixPalette(std::vector<mat4>& out)
 
 std::optional<std::size_t> Pose::GetParent(std::size_t index) const
 {
-	return mParents[index];
+	return parents[index];
 }
 
 void Pose::SetParent(std::size_t index, std::optional<std::size_t> parent)
 {
-	mParents[index] = parent;
+	parents[index] = parent;
 }
-
-/*
-bool Pose::operator==(const Pose& other)
-{
-	if (mJoints.size() != other.mJoints.size())
-	{
-		return false;
-	}
-	if (mParents.size() != other.mParents.size())
-	{
-		return false;
-	}
-	unsigned int size = (unsigned int) mJoints.size();
-	for (unsigned int i = 0; i < size; ++i)
-	{
-		Transform thisLocal = mJoints[i];
-		Transform otherLocal = other.mJoints[i];
-
-		int thisParent = mParents[i];
-		int otherParent = other.mParents[i];
-
-		if (thisParent != otherParent)
-		{
-			return false;
-		}
-
-		if (thisLocal != otherLocal)
-		{
-			return false;
-		}
-	}
-	return true;
-}
-
-bool Pose::operator!=(const Pose& other)
-{
-	return ! (*this == other);
-}
-*/
