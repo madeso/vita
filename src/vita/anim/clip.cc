@@ -40,7 +40,7 @@ float AdjustTimeToFitRange(const Clip& self, float inTime)
 	return inTime;
 }
 
-float Clip::Sample(Pose& outPose, float time) const
+float Clip::sample_to_pose(Pose& outPose, float time) const
 {
 	if (GetDuration() == 0.0f)
 	{

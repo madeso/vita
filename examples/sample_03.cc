@@ -60,7 +60,7 @@ Sample::Sample()
 
 void Sample::on_frame(float deltaTime)
 {
-	mPlaybackTime = mClips[mCurrentClip].Sample(mCurrentPose, mPlaybackTime + deltaTime);
+	mPlaybackTime = mClips[mCurrentClip].sample_to_pose(mCurrentPose, mPlaybackTime + deltaTime);
 	mCurrentPoseVisual->FromPose(mCurrentPose);
 }
 

@@ -21,7 +21,7 @@ struct Clip
 
 	Clip();
 
-	float Sample(Pose& outPose, float inTime) const;
+	float sample_to_pose(Pose& outPose, float inTime) const;
 	TransformTrack& operator[](std::size_t index);
 
 	float GetDuration() const;
