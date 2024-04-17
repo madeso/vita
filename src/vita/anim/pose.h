@@ -5,6 +5,8 @@
 
 #include "vita/anim/transform.h"
 
+// why is parent part of the Pose/joint???
+
 struct Joint
 {
 	std::optional<std::size_t> parent;
