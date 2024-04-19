@@ -2,9 +2,11 @@ embed(src_assets
     AS_TEXT
         vita/assets/lit.frag
         vita/assets/static.vert
+        vita/assets/skinned.vert
     AS_BINARY
         vita/assets/uv.png
         vita/assets/woman.gltf
+        vita/assets/woman.png
 )
 
 set(src_render
@@ -40,6 +42,10 @@ set(src_base
     vita/anim/pose.cc vita/anim/pose.h
     vita/anim/clip.cc vita/anim/clip.h
     vita/anim/gltfloader.cc vita/anim/gltfloader.h
+
+    # chapter 10
+    vita/anim/skeleton.cc vita/anim/skeleton.h
+    vita/anim/mesh.cc vita/anim/mesh.h
 
     
     vita/vita.cc vita/vita.h

@@ -8,8 +8,10 @@ namespace assets
 {
 ShaderSource static_shader();
 ShaderSource lit_shader();
+ShaderSource skinned_shader();
 
 TextureData uv_texture();
+TextureData woman_texture();
 
 GltfFile woman_gltf();
 

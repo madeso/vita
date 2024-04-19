@@ -18,4 +18,4 @@ using Pose = std::vector<Joint>;
 Transform calc_global_transform(const Pose& pose, std::size_t index);
 
 /// this seems what we used to called a compile pose
-std::vector<mat4> calc_matrix_palette();
+std::vector<mat4> calc_matrix_palette(const Pose& pose);
