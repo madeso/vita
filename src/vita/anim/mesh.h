@@ -12,36 +12,36 @@
 
 struct Mesh
 {
-	std::vector<vec3> mPosition;
-	std::vector<vec3> mNormal;
-	std::vector<vec2> mTexCoord;
-	std::vector<vec4> mWeights;
-	std::vector<ivec4> mInfluences;
-	std::vector<unsigned int> mIndices;
+	std::vector<vec3> position;
+	std::vector<vec3> normal;
+	std::vector<vec2> texcoord;
+	std::vector<vec4> weights;
+	std::vector<ivec4> influences;
 
-	Attribute<vec3>* mPosAttrib;
-	Attribute<vec3>* mNormAttrib;
-	Attribute<vec2>* mUvAttrib;
-	Attribute<vec4>* mWeightAttrib;
-	Attribute<ivec4>* mInfluenceAttrib;
-	IndexBuffer* mIndexBuffer;
+	std::vector<unsigned int> indices;
 
-	std::vector<vec3> mSkinnedPosition;
-	std::vector<vec3> mSkinnedNormal;
-	std::vector<mat4> mPosePalette;
+	Attribute<vec3>* attribute_position;
+	Attribute<vec3>* attribute_normal;
+	Attribute<vec2>* attribute_textcoord;
+	Attribute<vec4>* attribute_weights;
+	Attribute<ivec4>* attribute_influences;
+
+	IndexBuffer* index_buffer;
+
+	std::vector<vec3> skinned_position;
+	std::vector<vec3> skinned_normal;
+	std::vector<mat4> pose_palette;
 
 	Mesh();
 	Mesh(const Mesh&);
+
 	Mesh& operator=(const Mesh&);
+
 	~Mesh();
-	std::vector<vec3>& GetPosition();
-	std::vector<vec3>& GetNormal();
-	std::vector<vec2>& GetTexCoord();
-	std::vector<vec4>& GetWeights();
-	std::vector<ivec4>& GetInfluences();
-	std::vector<unsigned int>& GetIndices();
+
 	void CPUSkin(Skeleton& skeleton, Pose& pose);
 	void UpdateOpenGLBuffers();
+
 	void Bind(int position, int normal, int texCoord, int weight, int influcence);
 	void Draw();
 	void DrawInstanced(unsigned int numInstances);

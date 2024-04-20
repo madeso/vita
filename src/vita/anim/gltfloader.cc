@@ -156,25 +156,20 @@ void MeshFromAttribute(
 	const auto values = scalar_values_from_accessor(componentCount, accessor);
 	const auto acessorCount = accessor.count;
 
-	std::vector<vec3>& positions = outMesh.GetPosition();
-	std::vector<vec3>& normals = outMesh.GetNormal();
-	std::vector<vec2>& texCoords = outMesh.GetTexCoord();
-	std::vector<ivec4>& influences = outMesh.GetInfluences();
-	std::vector<vec4>& weights = outMesh.GetWeights();
-
 	for (std::size_t i = 0; i < acessorCount; ++i)
 	{
 		const auto index = i * componentCount;
 		switch (attribType)
 		{
 		case cgltf_attribute_type_position:
-			positions.push_back(vec3(values[index + 0], values[index + 1], values[index + 2]));
+			outMesh.position.push_back(vec3(values[index + 0], values[index + 1], values[index + 2])
+			);
 			break;
 		case cgltf_attribute_type_texcoord:
-			texCoords.push_back(vec2(values[index + 0], values[index + 1]));
+			outMesh.texcoord.push_back(vec2(values[index + 0], values[index + 1]));
 			break;
 		case cgltf_attribute_type_weights:
-			weights.push_back(
+			outMesh.weights.push_back(
 				vec4(values[index + 0], values[index + 1], values[index + 2], values[index + 3])
 			);
 			break;
@@ -185,7 +180,7 @@ void MeshFromAttribute(
 				{
 					normal = vec3(0, 1, 0);
 				}
-				normals.push_back(get_normalized(normal));
+				outMesh.normal.push_back(get_normalized(normal));
 			}
 			break;
 		case cgltf_attribute_type_joints:
@@ -212,7 +207,7 @@ void MeshFromAttribute(
 					0, find_node_index(skin->joints[joints.w], nodes, nodeCount).value_or(0)
 				));
 
-				influences.push_back(joints);
+				outMesh.influences.push_back(joints);
 			}
 			break;
 		default:
@@ -422,7 +417,7 @@ std::vector<Mesh> LoadMeshes(cgltf_data* data)
 	for (std::size_t i = 0; i < nodeCount; ++i)
 	{
 		cgltf_node* node = &nodes[i];
-		if (node->mesh == 0 || node->skin == 0)
+		if (node->mesh == nullptr || node->skin == nullptr)
 		{
 			continue;
 		}
@@ -445,12 +440,11 @@ std::vector<Mesh> LoadMeshes(cgltf_data* data)
 			if (primitive->indices != 0)
 			{
 				const auto indexCount = primitive->indices->count;
-				std::vector<unsigned int>& indices = mesh.GetIndices();
-				indices.resize(indexCount);
+				mesh.indices.resize(indexCount);
 
 				for (unsigned int k = 0; k < indexCount; ++k)
 				{
-					indices[k]
+					mesh.indices[k]
 						= static_cast<unsigned int>(cgltf_accessor_read_index(primitive->indices, k)
 						);
 				}

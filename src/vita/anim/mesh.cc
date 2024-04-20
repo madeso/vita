@@ -5,22 +5,22 @@
 
 Mesh::Mesh()
 {
-	mPosAttrib = new Attribute<vec3>();
-	mNormAttrib = new Attribute<vec3>();
-	mUvAttrib = new Attribute<vec2>();
-	mWeightAttrib = new Attribute<vec4>();
-	mInfluenceAttrib = new Attribute<ivec4>();
-	mIndexBuffer = new IndexBuffer();
+	attribute_position = new Attribute<vec3>();
+	attribute_normal = new Attribute<vec3>();
+	attribute_textcoord = new Attribute<vec2>();
+	attribute_weights = new Attribute<vec4>();
+	attribute_influences = new Attribute<ivec4>();
+	index_buffer = new IndexBuffer();
 }
 
 Mesh::Mesh(const Mesh& other)
 {
-	mPosAttrib = new Attribute<vec3>();
-	mNormAttrib = new Attribute<vec3>();
-	mUvAttrib = new Attribute<vec2>();
-	mWeightAttrib = new Attribute<vec4>();
-	mInfluenceAttrib = new Attribute<ivec4>();
-	mIndexBuffer = new IndexBuffer();
+	attribute_position = new Attribute<vec3>();
+	attribute_normal = new Attribute<vec3>();
+	attribute_textcoord = new Attribute<vec2>();
+	attribute_weights = new Attribute<vec4>();
+	attribute_influences = new Attribute<ivec4>();
+	index_buffer = new IndexBuffer();
 	*this = other;
 }
 
@@ -30,238 +30,212 @@ Mesh& Mesh::operator=(const Mesh& other)
 	{
 		return *this;
 	}
-	mPosition = other.mPosition;
-	mNormal = other.mNormal;
-	mTexCoord = other.mTexCoord;
-	mWeights = other.mWeights;
-	mInfluences = other.mInfluences;
-	mIndices = other.mIndices;
+	position = other.position;
+	normal = other.normal;
+	texcoord = other.texcoord;
+	weights = other.weights;
+	influences = other.influences;
+	indices = other.indices;
 	UpdateOpenGLBuffers();
 	return *this;
 }
 
 Mesh::~Mesh()
 {
-	delete mPosAttrib;
-	delete mNormAttrib;
-	delete mUvAttrib;
-	delete mWeightAttrib;
-	delete mInfluenceAttrib;
-	delete mIndexBuffer;
-}
-
-std::vector<vec3>& Mesh::GetPosition()
-{
-	return mPosition;
-}
-
-std::vector<vec3>& Mesh::GetNormal()
-{
-	return mNormal;
-}
-
-std::vector<vec2>& Mesh::GetTexCoord()
-{
-	return mTexCoord;
-}
-
-std::vector<vec4>& Mesh::GetWeights()
-{
-	return mWeights;
-}
-
-std::vector<ivec4>& Mesh::GetInfluences()
-{
-	return mInfluences;
-}
-
-std::vector<unsigned int>& Mesh::GetIndices()
-{
-	return mIndices;
+	delete attribute_position;
+	delete attribute_normal;
+	delete attribute_textcoord;
+	delete attribute_weights;
+	delete attribute_influences;
+	delete index_buffer;
 }
 
 void Mesh::UpdateOpenGLBuffers()
 {
-	if (mPosition.size() > 0)
+	if (position.size() > 0)
 	{
-		mPosAttrib->set(mPosition);
+		attribute_position->set(position);
 	}
-	if (mNormal.size() > 0)
+	if (normal.size() > 0)
 	{
-		mNormAttrib->set(mNormal);
+		attribute_normal->set(normal);
 	}
-	if (mTexCoord.size() > 0)
+	if (texcoord.size() > 0)
 	{
-		mUvAttrib->set(mTexCoord);
+		attribute_textcoord->set(texcoord);
 	}
-	if (mWeights.size() > 0)
+	if (weights.size() > 0)
 	{
-		mWeightAttrib->set(mWeights);
+		attribute_weights->set(weights);
 	}
-	if (mInfluences.size() > 0)
+	if (influences.size() > 0)
 	{
-		mInfluenceAttrib->set(mInfluences);
+		attribute_influences->set(influences);
 	}
-	if (mIndices.size() > 0)
+	if (indices.size() > 0)
 	{
-		mIndexBuffer->set(mIndices);
+		index_buffer->set(indices);
 	}
 }
 
-void Mesh::Bind(int position, int normal, int texCoord, int weight, int influcence)
+void Mesh::Bind(
+	int position_slot, int normal_slot, int texcoord_slot, int weights_slot, int influcences_slot
+)
 {
-	if (position >= 0)
+	if (position_slot >= 0)
 	{
-		mPosAttrib->bind_to(static_cast<unsigned int>(position));
+		attribute_position->bind_to(static_cast<unsigned int>(position_slot));
 	}
-	if (normal >= 0)
+	if (normal_slot >= 0)
 	{
-		mNormAttrib->bind_to(static_cast<unsigned int>(normal));
+		attribute_normal->bind_to(static_cast<unsigned int>(normal_slot));
 	}
-	if (texCoord >= 0)
+	if (texcoord_slot >= 0)
 	{
-		mUvAttrib->bind_to(static_cast<unsigned int>(texCoord));
+		attribute_textcoord->bind_to(static_cast<unsigned int>(texcoord_slot));
 	}
-	if (weight >= 0)
+	if (weights_slot >= 0)
 	{
-		mWeightAttrib->bind_to(static_cast<unsigned int>(weight));
+		attribute_weights->bind_to(static_cast<unsigned int>(weights_slot));
 	}
-	if (influcence >= 0)
+	if (influcences_slot >= 0)
 	{
-		mInfluenceAttrib->bind_to(static_cast<unsigned int>(influcence));
+		attribute_influences->bind_to(static_cast<unsigned int>(influcences_slot));
 	}
 }
 
 void Mesh::Draw()
 {
-	if (mIndices.size() > 0)
+	if (indices.size() > 0)
 	{
-		::draw(*mIndexBuffer, DrawMode::Triangles);
+		::draw(*index_buffer, DrawMode::Triangles);
 	}
 	else
 	{
-		::draw(static_cast<unsigned int>(mPosition.size()), DrawMode::Triangles);
+		::draw(static_cast<unsigned int>(position.size()), DrawMode::Triangles);
 	}
 }
 
 void Mesh::DrawInstanced(unsigned int numInstances)
 {
-	if (mIndices.size() > 0)
+	if (indices.size() > 0)
 	{
-		::draw_instanced(*mIndexBuffer, DrawMode::Triangles, numInstances);
+		::draw_instanced(*index_buffer, DrawMode::Triangles, numInstances);
 	}
 	else
 	{
 		::draw_instanced(
-			static_cast<unsigned int>(mPosition.size()), DrawMode::Triangles, numInstances
+			static_cast<unsigned int>(position.size()), DrawMode::Triangles, numInstances
 		);
 	}
 }
 
-void Mesh::UnBind(int position, int normal, int texCoord, int weight, int influcence)
+void Mesh::UnBind(
+	int position_slot, int normal_slot, int texcoord_slot, int weights_slot, int influcences_slot
+)
 {
-	if (position >= 0)
+	if (position_slot >= 0)
 	{
-		mPosAttrib->unbind_from(static_cast<unsigned int>(position));
+		attribute_position->unbind_from(static_cast<unsigned int>(position_slot));
 	}
-	if (normal >= 0)
+	if (normal_slot >= 0)
 	{
-		mNormAttrib->unbind_from(static_cast<unsigned int>(normal));
+		attribute_normal->unbind_from(static_cast<unsigned int>(normal_slot));
 	}
-	if (texCoord >= 0)
+	if (texcoord_slot >= 0)
 	{
-		mUvAttrib->unbind_from(static_cast<unsigned int>(texCoord));
+		attribute_textcoord->unbind_from(static_cast<unsigned int>(texcoord_slot));
 	}
-	if (weight >= 0)
+	if (weights_slot >= 0)
 	{
-		mWeightAttrib->unbind_from(static_cast<unsigned int>(weight));
+		attribute_weights->unbind_from(static_cast<unsigned int>(weights_slot));
 	}
-	if (influcence >= 0)
+	if (influcences_slot >= 0)
 	{
-		mInfluenceAttrib->unbind_from(static_cast<unsigned int>(influcence));
+		attribute_influences->unbind_from(static_cast<unsigned int>(influcences_slot));
 	}
 }
 
 #if 1
 void Mesh::CPUSkin(Skeleton& skeleton, Pose& pose)
 {
-	const auto numVerts = mPosition.size();
+	const auto numVerts = position.size();
 	if (numVerts == 0)
 	{
 		return;
 	}
 
-	mSkinnedPosition.resize(numVerts);
-	mSkinnedNormal.resize(numVerts);
+	skinned_position.resize(numVerts);
+	skinned_normal.resize(numVerts);
 
-	mPosePalette = calc_matrix_palette(pose);
+	pose_palette = calc_matrix_palette(pose);
 	std::vector<mat4> invPosePalette = skeleton.inverse_bind_pose;
 
 	for (std::size_t i = 0; i < numVerts; ++i)
 	{
-		const auto& j = mInfluences[i];
-		const auto& w = mWeights[i];
+		const auto& j = influences[i];
+		const auto& w = weights[i];
 
-		mat4 m0 = (mPosePalette[static_cast<std::size_t>(j.x)]
+		mat4 m0 = (pose_palette[static_cast<std::size_t>(j.x)]
 				   * invPosePalette[static_cast<std::size_t>(j.x)])
 				* w.x;
-		mat4 m1 = (mPosePalette[static_cast<std::size_t>(j.y)]
+		mat4 m1 = (pose_palette[static_cast<std::size_t>(j.y)]
 				   * invPosePalette[static_cast<std::size_t>(j.y)])
 				* w.y;
-		mat4 m2 = (mPosePalette[static_cast<std::size_t>(j.z)]
+		mat4 m2 = (pose_palette[static_cast<std::size_t>(j.z)]
 				   * invPosePalette[static_cast<std::size_t>(j.z)])
 				* w.z;
-		mat4 m3 = (mPosePalette[static_cast<std::size_t>(j.w)]
+		mat4 m3 = (pose_palette[static_cast<std::size_t>(j.w)]
 				   * invPosePalette[static_cast<std::size_t>(j.w)])
 				* w.w;
 
 		mat4 skin = m0 + m1 + m2 + m3;
 
-		mSkinnedPosition[i] = get_transformed_point(skin, mPosition[i]);
-		mSkinnedNormal[i] = get_transformed_vector(skin, mNormal[i]);
+		skinned_position[i] = get_transformed_point(skin, position[i]);
+		skinned_normal[i] = get_transformed_vector(skin, normal[i]);
 	}
 
-	mPosAttrib->set(mSkinnedPosition);
-	mNormAttrib->set(mSkinnedNormal);
+	attribute_position->set(skinned_position);
+	attribute_normal->set(skinned_normal);
 }
 #else
 void Mesh::CPUSkin(Skeleton& skeleton, Pose& pose)
 {
-	unsigned int numVerts = (unsigned int) mPosition.size();
+	unsigned int numVerts = (unsigned int) position.size();
 	if (numVerts == 0)
 	{
 		return;
 	}
 
-	mSkinnedPosition.resize(numVerts);
-	mSkinnedNormal.resize(numVerts);
+	skinned_position.resize(numVerts);
+	skinned_normal.resize(numVerts);
 	Pose& bindPose = skeleton.GetBindPose();
 
 	for (unsigned int i = 0; i < numVerts; ++i)
 	{
-		ivec4& joint = mInfluences[i];
-		vec4& weight = mWeights[i];
+		ivec4& joint = influences[i];
+		vec4& weight = weights[i];
 
 		Transform skin0 = combine(pose[joint.x], inverse(bindPose[joint.x]));
-		vec3 p0 = transformPoint(skin0, mPosition[i]);
-		vec3 n0 = transformVector(skin0, mNormal[i]);
+		vec3 p0 = transformPoint(skin0, position[i]);
+		vec3 n0 = transformVector(skin0, normal[i]);
 
 		Transform skin1 = combine(pose[joint.y], inverse(bindPose[joint.y]));
-		vec3 p1 = transformPoint(skin1, mPosition[i]);
-		vec3 n1 = transformVector(skin1, mNormal[i]);
+		vec3 p1 = transformPoint(skin1, position[i]);
+		vec3 n1 = transformVector(skin1, normal[i]);
 
 		Transform skin2 = combine(pose[joint.z], inverse(bindPose[joint.z]));
-		vec3 p2 = transformPoint(skin2, mPosition[i]);
-		vec3 n2 = transformVector(skin2, mNormal[i]);
+		vec3 p2 = transformPoint(skin2, position[i]);
+		vec3 n2 = transformVector(skin2, normal[i]);
 
 		Transform skin3 = combine(pose[joint.w], inverse(bindPose[joint.w]));
-		vec3 p3 = transformPoint(skin3, mPosition[i]);
-		vec3 n3 = transformVector(skin3, mNormal[i]);
-		mSkinnedPosition[i] = p0 * weight.x + p1 * weight.y + p2 * weight.z + p3 * weight.w;
-		mSkinnedNormal[i] = n0 * weight.x + n1 * weight.y + n2 * weight.z + n3 * weight.w;
+		vec3 p3 = transformPoint(skin3, position[i]);
+		vec3 n3 = transformVector(skin3, normal[i]);
+		skinned_position[i] = p0 * weight.x + p1 * weight.y + p2 * weight.z + p3 * weight.w;
+		skinned_normal[i] = n0 * weight.x + n1 * weight.y + n2 * weight.z + n3 * weight.w;
 	}
 
-	mPosAttrib->Set(mSkinnedPosition);
-	mNormAttrib->Set(mSkinnedNormal);
+	attribute_position->Set(skinned_position);
+	attribute_normal->Set(skinned_normal);
 }
 #endif
