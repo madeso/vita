@@ -39,15 +39,15 @@ Sample::Sample()
 	free_gltf_file(gltf);
 
 	mRestPoseVisual = new DebugDraw();
-	mRestPoseVisual->FromPose(mSkeleton.mRestPose);
+	mRestPoseVisual->FromPose(mSkeleton.rest_pose);
 	mRestPoseVisual->UpdateOpenGLBuffers();
 
 	mBindPoseVisual = new DebugDraw();
-	mBindPoseVisual->FromPose(mSkeleton.mBindPose);
+	mBindPoseVisual->FromPose(mSkeleton.bind_pose);
 	mBindPoseVisual->UpdateOpenGLBuffers();
 
 	mCurrentClip = 0;
-	mCurrentPose = mSkeleton.mRestPose;
+	mCurrentPose = mSkeleton.rest_pose;
 
 	mCurrentPoseVisual = new DebugDraw();
 	mCurrentPoseVisual->FromPose(mCurrentPose);

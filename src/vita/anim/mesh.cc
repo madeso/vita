@@ -195,7 +195,7 @@ void Mesh::CPUSkin(Skeleton& skeleton, Pose& pose)
 	mSkinnedNormal.resize(numVerts);
 
 	mPosePalette = calc_matrix_palette(pose);
-	std::vector<mat4> invPosePalette = skeleton.mInvBindPose;
+	std::vector<mat4> invPosePalette = skeleton.inverse_bind_pose;
 
 	for (std::size_t i = 0; i < numVerts; ++i)
 	{

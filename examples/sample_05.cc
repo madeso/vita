@@ -70,10 +70,10 @@ Sample::Sample()
 	mSkinnedShader = new Shader(assets::skinned_shader(), assets::lit_shader());
 	mDiffuseTexture = new Texture(assets::woman_texture());
 
-	mGPUAnimInfo.mAnimatedPose = mSkeleton.mRestPose;
-	mGPUAnimInfo.mPosePalette.resize(mSkeleton.mRestPose.size());
-	mCPUAnimInfo.mAnimatedPose = mSkeleton.mRestPose;
-	mCPUAnimInfo.mPosePalette.resize(mSkeleton.mRestPose.size());
+	mGPUAnimInfo.mAnimatedPose = mSkeleton.rest_pose;
+	mGPUAnimInfo.mPosePalette.resize(mSkeleton.rest_pose.size());
+	mCPUAnimInfo.mAnimatedPose = mSkeleton.rest_pose;
+	mCPUAnimInfo.mPosePalette.resize(mSkeleton.rest_pose.size());
 
 	mGPUAnimInfo.mModel.position = vec3(-2, 0, 0);
 	mCPUAnimInfo.mModel.position = vec3(2, 0, 0);
@@ -154,7 +154,7 @@ void Sample::on_render(float inAspectRatio)
 	Uniform<vec3>::Set(mSkinnedShader->get_uniform("light"), vec3(1, 1, 1));
 
 	Uniform<mat4>::Set(mSkinnedShader->get_uniform("pose"), mGPUAnimInfo.mPosePalette);
-	Uniform<mat4>::Set(mSkinnedShader->get_uniform("invBindPose"), mSkeleton.mInvBindPose);
+	Uniform<mat4>::Set(mSkinnedShader->get_uniform("invBindPose"), mSkeleton.inverse_bind_pose);
 
 	mDiffuseTexture->bind(mSkinnedShader->get_uniform("tex0"), 0);
 	for (std::size_t i = 0, size = mGPUMeshes.size(); i < size; ++i)
