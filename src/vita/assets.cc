@@ -6,6 +6,7 @@
 #include "uv.png.h"
 #include "woman.gltf.h"
 #include "woman.png.h"
+#include "ik_course.gltf.h"
 
 namespace assets
 {
@@ -37,6 +38,11 @@ TextureData woman_texture()
 GltfFile woman_gltf()
 {
 	return {"woman.gltf", WOMAN_GLTF.data, WOMAN_GLTF.size};
+}
+
+GltfFile ik_course_gltf()
+{
+	return {"ik_course_gltf", IK_COURSE_GLTF.data, IK_COURSE_GLTF.size};
 }
 
 }  //  namespace assets

@@ -14,6 +14,7 @@ TextureData uv_texture();
 TextureData woman_texture();
 
 GltfFile woman_gltf();
+GltfFile ik_course_gltf();
 
 
 }  //  namespace assets

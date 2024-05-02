@@ -7,6 +7,7 @@ embed(src_assets
         vita/assets/uv.png
         vita/assets/woman.gltf
         vita/assets/woman.png
+        vita/assets/ik_course.gltf
 )
 
 set(src_render
@@ -46,6 +47,14 @@ set(src_base
     # chapter 10
     vita/anim/skeleton.cc vita/anim/skeleton.h
     vita/anim/mesh.cc vita/anim/mesh.h
+
+    # chapter 11 - optimization (ignored)
+    # chapter 12 - blending (ignored)
+    # chapter 13
+    vita/anim/solver.ccd.cc vita/anim/solver.ccd.h
+    vita/anim/solver.fabrik.cc vita/anim/solver.fabrik.h
+    vita/anim/intersections.cc vita/anim/intersections.h
+    vita/anim/ikleg.cc vita/anim/ikleg.h
 
     
     vita/vita.cc vita/vita.h

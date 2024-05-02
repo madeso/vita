@@ -7,6 +7,9 @@
 #include "vita/anim/vec3.h"
 #include "vita/anim/mat4.h"
 #include "vita/anim/pose.h"
+#include "vita/anim/solver.ccd.h"
+#include "vita/anim/solver.fabrik.h"
+
 
 enum class DebugDrawMode
 {
@@ -41,6 +44,11 @@ struct DebugDraw
 	void Push(const vec3& v);
 
 	void FromPose(const Pose& pose);
+
+	void LinesFromIKSolver(const CCDSolver& solver);
+	void PointsFromIKSolver(const CCDSolver& solver);
+	void LinesFromIKSolver(const FABRIKSolver& solver);
+	void PointsFromIKSolver(const FABRIKSolver& solver);
 
 	void UpdateOpenGLBuffers();
 	void Draw(DebugDrawMode mode, const vec3& color, const mat4& mvp);
