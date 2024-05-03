@@ -59,6 +59,8 @@ struct Sample : public App
 	bool mShowMesh;
 	bool mShowEnvironment;
 
+	bool use_fabrik = true;
+
 	Sample();
 	~Sample();
 
@@ -67,6 +69,7 @@ struct Sample : public App
 
 	void on_gui() override
 	{
+		ImGui::Checkbox("Use FABRIK", &use_fabrik);
 		ImGui::SliderFloat("mTimeMod", &mTimeMod, 0.0f, 1.0f);
 		ImGui::DragFloat("mSinkIntoGround", &mSinkIntoGround, 0.01f);
 		ImGui::SliderFloat("mWalkingTime", &mWalkingTime, 0.00f, ANIM_TIME);
@@ -449,8 +452,9 @@ void Sample::on_frame(float deltaTime)
 	worldRightAnkle = lerp(worldRightAnkle, predictiveRightAnkle, rightMotion);
 
 	// Now that we know the position of the model, as well as the ankle we can solve the feet.
-	mLeftLeg->SolveForLeg(mModel, mCurrentPose, worldLeftAnkle /*, worldLeftToe*/);
-	mRightLeg->SolveForLeg(mModel, mCurrentPose, worldRightAnkle /*, worldRightToe*/);
+	IkFunction solver = use_fabrik ? ik_fabrik : ik_ccd;
+	mLeftLeg->SolveForLeg(solver, mModel, mCurrentPose, worldLeftAnkle /*, worldLeftToe*/);
+	mRightLeg->SolveForLeg(solver, mModel, mCurrentPose, worldRightAnkle /*, worldRightToe*/);
 	// Apply the solved feet
 	CopyPose(mCurrentPose, mCurrentPose, mLeftLeg->GetAdjustedPose(), mLeftLeg->Hip());
 	CopyPose(mCurrentPose, mCurrentPose, mRightLeg->GetAdjustedPose(), mRightLeg->Hip());

@@ -1,15 +1,12 @@
 #pragma once
 
-#include "vita/anim/solver.ccd.h"
-#include "vita/anim/solver.fabrik.h"
+#include "vita/anim/ik.h"
 #include "vita/anim/debugdraw.h"
 #include "vita/anim/skeleton.h"
 #include "vita/anim/track.h"
 
 struct IKLeg
 {
-	// ScalarTrack mPinTrack;
-	FABRIKSolver mSolver;
 	Pose mIKPose;
 
 	std::size_t mHipIndex;
@@ -36,10 +33,11 @@ struct IKLeg
 	IKLeg& operator=(const IKLeg&);
 	~IKLeg();
 
-	void SolveForLeg(const Transform& model, Pose& pose, const vec3& ankleTargetPosition);
+	void SolveForLeg(
+		IkFunction ik_solver, const Transform& model, Pose& pose, const vec3& ankleTargetPosition
+	);
 
 	Pose& GetAdjustedPose();
-	// ScalarTrack& GetTrack();
 
 	void Draw(const mat4& vp, const vec3& legColor);
 

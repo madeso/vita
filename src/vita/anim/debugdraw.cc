@@ -104,64 +104,28 @@ void DebugDraw::FromPose(const Pose& pose)
 	}
 }
 
-void DebugDraw::LinesFromIKSolver(const CCDSolver& solver)
+void DebugDraw::LinesFromIKSolver(const std::vector<vec3>& positions)
 {
-	if (solver.Size() < 2)
+	if (positions.size() < 2)
 	{
 		return;
 	}
-	unsigned int requiredVerts = (solver.Size() - 1) * 2;
+	const auto requiredVerts = (positions.size() - 1) * 2;
 	mPoints.resize(requiredVerts);
 
 	unsigned int index = 0;
-	for (unsigned int i = 0, size = solver.Size(); i < size - 1; ++i)
+	for (std::size_t i = 0, size = positions.size(); i < size - 1; ++i)
 	{
-		mPoints[index] = solver.GetGlobalTransform(i).position;
+		mPoints[index] = positions[i];
 		index++;
-		mPoints[index] = solver.GetGlobalTransform(i + 1).position;
-		index++;
-	}
-}
-
-void DebugDraw::PointsFromIKSolver(const CCDSolver& solver)
-{
-	unsigned int requiredVerts = solver.Size();
-	mPoints.resize(requiredVerts);
-
-	for (unsigned int i = 0, size = solver.Size(); i < size; ++i)
-	{
-		mPoints[i] = solver.GetGlobalTransform(i).position;
-	}
-}
-
-void DebugDraw::LinesFromIKSolver(const FABRIKSolver& solver)
-{
-	if (solver.Size() < 2)
-	{
-		return;
-	}
-	unsigned int requiredVerts = (solver.Size() - 1) * 2;
-	mPoints.resize(requiredVerts);
-
-	unsigned int index = 0;
-	for (unsigned int i = 0, size = solver.Size(); i < size - 1; ++i)
-	{
-		mPoints[index] = solver.GetGlobalTransform(i).position;
-		index++;
-		mPoints[index] = solver.GetGlobalTransform(i + 1).position;
+		mPoints[index] = positions[i + 1];
 		index++;
 	}
 }
 
-void DebugDraw::PointsFromIKSolver(const FABRIKSolver& solver)
+void DebugDraw::PointsFromIKSolver(const std::vector<vec3>& positions)
 {
-	unsigned int requiredVerts = solver.Size();
-	mPoints.resize(requiredVerts);
-
-	for (unsigned int i = 0, size = solver.Size(); i < size; ++i)
-	{
-		mPoints[i] = solver.GetGlobalTransform(i).position;
-	}
+	mPoints = positions;
 }
 
 void DebugDraw::Draw(DebugDrawMode mode, const vec3& color, const mat4& mvp)

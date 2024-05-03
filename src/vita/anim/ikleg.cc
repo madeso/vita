@@ -11,7 +11,6 @@ IKLeg::IKLeg(
 	mLineVisuals = new DebugDraw();
 	mPointVisuals = new DebugDraw();
 
-	mSolver.Resize(3);
 	mPointVisuals->Resize(3);
 	mLineVisuals->Resize(4);
 
@@ -46,7 +45,6 @@ IKLeg::IKLeg()
 	mLineVisuals = new DebugDraw();
 	mPointVisuals = new DebugDraw();
 
-	mSolver.Resize(3);
 	mPointVisuals->Resize(3);
 	mLineVisuals->Resize(4);
 }
@@ -57,7 +55,6 @@ IKLeg::IKLeg(const IKLeg& other)
 	mPointVisuals = new DebugDraw();
 
 	mAnkleToGroundOffset = 0.0f;
-	mSolver.Resize(3);
 	mPointVisuals->Resize(3);
 	mLineVisuals->Resize(4);
 
@@ -71,7 +68,6 @@ IKLeg& IKLeg::operator=(const IKLeg& other)
 		return *this;
 	}
 
-	mSolver = other.mSolver;
 	mAnkleToGroundOffset = other.mAnkleToGroundOffset;
 	mHipIndex = other.mHipIndex;
 	mKneeIndex = other.mKneeIndex;
@@ -87,25 +83,30 @@ IKLeg::~IKLeg()
 	delete mPointVisuals;
 }
 
-void IKLeg::SolveForLeg(const Transform& model, Pose& pose, const vec3& ankleTargetPosition)
+void IKLeg::SolveForLeg(
+	IkFunction ik_solver, const Transform& model, Pose& pose, const vec3& ankleTargetPosition
+)
 {
-	mSolver.SetLocalTransform(0, get_combined(model, calc_global_transform(pose, mHipIndex)));
-	mSolver.SetLocalTransform(1, pose[mKneeIndex].local);
-	mSolver.SetLocalTransform(2, pose[mAnkleIndex].local);
+	auto local_transforms = std::vector<Transform>{
+		get_combined(model, calc_global_transform(pose, mHipIndex)),
+		pose[mKneeIndex].local,
+		pose[mAnkleIndex].local
+	};
 	mIKPose = pose;
 
 	Transform target(
 		ankleTargetPosition + vec3(0, 1, 0) * mAnkleToGroundOffset, quat(), vec3(1, 1, 1)
 	);
-	mSolver.Solve(target);
+	ik_solver(local_transforms, target, DEFAULT_NUM_STEPS, DEFAULT_THRESHOLD);
 
 	Transform rootWorld = get_combined(model, calc_global_transform(pose, *pose[mHipIndex].parent));
-	mIKPose[mHipIndex].local = get_combined(get_inverse(rootWorld), mSolver.GetLocalTransform(0));
-	mIKPose[mKneeIndex].local = mSolver.GetLocalTransform(1);
-	mIKPose[mAnkleIndex].local = mSolver.GetLocalTransform(2);
+	mIKPose[mHipIndex].local = get_combined(get_inverse(rootWorld), local_transforms[0]);
+	mIKPose[mKneeIndex].local = local_transforms[1];
+	mIKPose[mAnkleIndex].local = local_transforms[2];
 
-	mLineVisuals->LinesFromIKSolver(mSolver);
-	mPointVisuals->PointsFromIKSolver(mSolver);
+	const auto global_transforms = GetGlobalTransforms(local_transforms);
+	mLineVisuals->LinesFromIKSolver(global_transforms);
+	mPointVisuals->PointsFromIKSolver(global_transforms);
 }
 
 Pose& IKLeg::GetAdjustedPose()

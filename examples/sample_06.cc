@@ -6,12 +6,13 @@
 
 #include "vita/anim/debugdraw.h"
 #include "vita/anim/transformtrack.h"
+#include "vita/anim/ik.h"
 
 struct Sample : public App
 {
+	std::vector<Transform> local_transforms;
+
 	Transform mTarget;
-	CCDSolver ccd;
-	FABRIKSolver fabrik;
 	DebugDraw* mSolverLines;
 	DebugDraw* mSolverPoints;
 	DebugDraw* mTargetVisual[3];
@@ -47,36 +48,18 @@ constexpr float QUAT_DEG2RAD = 0.0174533f;
 Sample::Sample()
 {
 	// ccd
-	ccd.Resize(6);
-	ccd[0] = Transform(
-		vec3(), quat_from_angle_axis(90.0f * QUAT_DEG2RAD, vec3(1, 0, 0)), vec3(1, 1, 1)
-	);
-	ccd[1] = Transform(vec3(0, 0, 1.0f), quat(), vec3(1, 1, 1));
-	ccd[2] = Transform(vec3(0, 0, 1.5f), quat(), vec3(1, 1, 1));
-	ccd[3] = Transform(
-		vec3(0, 0, 0.5f), quat_from_angle_axis(90.0f * QUAT_DEG2RAD, vec3(0, 1, 0)), vec3(1, 1, 1)
-	);
-	ccd[4] = Transform(vec3(0, 0, 0.5f), quat(), vec3(1, 1, 1));
-	ccd[5] = Transform(vec3(0, 0, 0.5f), quat(), vec3(1, 1, 1));
-
-	// fabrik
-	fabrik.Resize(6);
-	fabrik.SetLocalTransform(
-		0,
-		Transform(vec3(), quat_from_angle_axis(90.0f * QUAT_DEG2RAD, vec3(1, 0, 0)), vec3(1, 1, 1))
-	);
-	fabrik.SetLocalTransform(1, Transform(vec3(0, 0, 1.0f), quat(), vec3(1, 1, 1)));
-	fabrik.SetLocalTransform(2, Transform(vec3(0, 0, 1.5f), quat(), vec3(1, 1, 1)));
-	fabrik.SetLocalTransform(
-		3,
+	local_transforms = {
+		Transform(vec3(), quat_from_angle_axis(90.0f * QUAT_DEG2RAD, vec3(1, 0, 0)), vec3(1, 1, 1)),
+		Transform(vec3(0, 0, 1.0f), quat(), vec3(1, 1, 1)),
+		Transform(vec3(0, 0, 1.5f), quat(), vec3(1, 1, 1)),
 		Transform(
 			vec3(0, 0, 0.5f),
 			quat_from_angle_axis(90.0f * QUAT_DEG2RAD, vec3(0, 1, 0)),
 			vec3(1, 1, 1)
-		)
-	);
-	fabrik.SetLocalTransform(4, Transform(vec3(0, 0, 0.5f), quat(), vec3(1, 1, 1)));
-	fabrik.SetLocalTransform(5, Transform(vec3(0, 0, 0.5f), quat(), vec3(1, 1, 1)));
+		),
+		Transform(vec3(0, 0, 0.5f), quat(), vec3(1, 1, 1)),
+		Transform(vec3(0, 0, 0.5f), quat(), vec3(1, 1, 1)),
+	};
 
 	mTarget.position = vec3(1, -2, 0);
 
@@ -118,11 +101,8 @@ void Sample::on_frame(float deltaTime)
 	}
 	mTarget = mTargetPath.get_sample(mTarget, mPlayTime, true);
 
-
-	if (use_ccd)
-		ccd.Solve(mTarget);
-	else
-		fabrik.Solve(mTarget);
+	IkFunction solver = use_ccd ? ik_ccd : ik_fabrik;
+	solver(local_transforms, mTarget, DEFAULT_NUM_STEPS, DEFAULT_THRESHOLD);
 }
 
 void Sample::on_render(float inAspectRatio)
@@ -137,16 +117,9 @@ void Sample::on_render(float inAspectRatio)
 	mat4 view = mat4_from_look_at(cameraPos, vec3(0, 0, 0), vec3(0, 1, 0));
 	mat4 mvp = projection * view;  // No model
 
-	if (use_ccd)
-	{
-		mSolverLines->LinesFromIKSolver(ccd);
-		mSolverPoints->PointsFromIKSolver(ccd);
-	}
-	else
-	{
-		mSolverLines->LinesFromIKSolver(fabrik);
-		mSolverPoints->PointsFromIKSolver(fabrik);
-	}
+	const auto points = GetGlobalTransforms(local_transforms);
+	mSolverLines->LinesFromIKSolver(points);
+	mSolverPoints->PointsFromIKSolver(points);
 
 	mSolverLines->UpdateOpenGLBuffers();
 	mSolverPoints->UpdateOpenGLBuffers();

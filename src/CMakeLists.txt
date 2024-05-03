@@ -51,8 +51,7 @@ set(src_base
     # chapter 11 - optimization (ignored)
     # chapter 12 - blending (ignored)
     # chapter 13
-    vita/anim/solver.ccd.cc vita/anim/solver.ccd.h
-    vita/anim/solver.fabrik.cc vita/anim/solver.fabrik.h
+    vita/anim/ik.cc vita/anim/ik.h
     vita/anim/intersections.cc vita/anim/intersections.h
     vita/anim/ikleg.cc vita/anim/ikleg.h
 
