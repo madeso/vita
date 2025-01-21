@@ -250,6 +250,7 @@ T Track<T>::get_sample(float time, bool looping) const
 {
 	switch (interpolation)
 	{
+	default:
 	case Interpolation::Constant: return get_sample_constant(*this, time, looping);
 	case Interpolation::Linear: return get_sample_linear(*this, time, looping);
 	case Interpolation::Cubic: return get_sample_cubic(*this, time, looping);

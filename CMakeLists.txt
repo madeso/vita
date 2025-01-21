@@ -24,6 +24,10 @@ include(cmake/Sanitizers.cmake)
 add_library(project_options INTERFACE)
 add_library(project_warnings INTERFACE)
 
+if(WIN32)
+    target_compile_definitions(project_options INTERFACE _CRT_SECURE_NO_WARNINGS)
+endif()
+
 target_link_libraries(project_options INTERFACE edit_and_continue)
 
 target_compile_features(project_options INTERFACE cxx_std_17)
