@@ -1,0 +1,6 @@
+﻿{
+  "name": "vita",
+  "dependencies": [
+    "sdl-2.0.20"
+  ]
+}
